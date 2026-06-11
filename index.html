@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Helper — Numbers · Times · Fractions · Words</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ones:#2f9e57;--ones-bg:#e4f6ea;--tens:#2f74d0;--tens-bg:#e3eefb;
+    --hundreds:#e07b28;--hundreds-bg:#fdeedf;--thousands:#7c4dc4;--thousands-bg:#f0e8fb;
+    --frac:#d9577a;--frac-bg:#fbe6ec;
+    --paper:#fbf6ec;--card:#ffffff;--ink:#3a3530;--soft:#8a8178;--line:#e8ddca;
+    --good:#2f9e57;--gentle:#d98a3d;--shadow:0 6px 0 rgba(0,0,0,.06),0 12px 28px rgba(120,90,40,.10);--radius:22px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{font-family:'Nunito',sans-serif;background:radial-gradient(circle at 12% 8%,#fff7e9 0,transparent 40%),radial-gradient(circle at 90% 4%,#f3ecfb 0,transparent 38%),var(--paper);color:var(--ink);min-height:100vh;-webkit-text-size-adjust:100%;}
+  h1,h2,h3,.fred{font-family:'Fredoka',sans-serif;font-weight:600;}
+  .wrap{max-width:1000px;margin:0 auto;padding:18px 16px 60px;}
+  header.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+  .title{display:flex;align-items:center;gap:12px;}
+  .title .logo{font-size:30px;line-height:1;background:#fff;border:3px solid var(--line);border-radius:16px;padding:8px 12px;box-shadow:var(--shadow);}
+  .title h1{font-size:24px;margin:0;letter-spacing:.3px;}
+  .title p{margin:2px 0 0;color:var(--soft);font-weight:700;font-size:13px;}
+  .tools{display:flex;gap:8px;flex-wrap:wrap;}
+  .tbtn{font-family:'Fredoka';font-size:15px;border:3px solid var(--line);background:#fff;color:var(--ink);border-radius:14px;padding:9px 14px;cursor:pointer;box-shadow:var(--shadow);transition:transform .08s;}
+  .tbtn:active{transform:translateY(2px);}
+  .tbtn.lang{border-color:var(--ink);}
+  .tbtn.sel{border-color:var(--thousands);color:var(--thousands);}
+  nav.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+  .tab{font-family:'Fredoka';font-size:17px;font-weight:500;border:3px solid var(--line);background:#fff;color:var(--soft);border-radius:16px;padding:11px 16px;cursor:pointer;box-shadow:var(--shadow);transition:transform .08s,color .15s,border-color .15s;display:flex;align-items:center;gap:8px;}
+  .tab .ic{font-size:20px;}
+  .tab[aria-selected="true"]{color:var(--ink);border-color:var(--ink);}
+  .tab:active{transform:translateY(2px);}
+  section.panel{display:none;animation:pop .25s ease;}
+  section.panel.show{display:block;}
+  @keyframes pop{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  .card{position:relative;background:var(--card);border:3px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin-bottom:18px;}
+  .card h2{margin:0 0 4px;font-size:22px;}
+  .printable h2{padding-right:70px;}
+  #wordsContainer{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;}
+  #wordsContainer .card{margin-bottom:0;padding:16px;}
+  .guidegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;}
+  .guidetile{border:3px solid var(--line);border-radius:18px;padding:16px;background:#fff;cursor:pointer;transition:transform .08s;box-shadow:var(--shadow);text-align:left;display:flex;flex-direction:column;gap:6px;}
+  .guidetile:active{transform:translateY(2px);}
+  .guidetile .gt-ic{font-size:30px;}
+  .guidetile .gt-name{font-family:'Fredoka';font-weight:600;font-size:19px;}
+  .guidetile .gt-desc{font-size:14px;color:var(--soft);font-weight:700;line-height:1.35;}
+  .guidetile .gt-open{font-family:'Fredoka';font-weight:600;font-size:14px;margin-top:auto;}
+  .lead{color:var(--soft);font-weight:700;margin:0 0 16px;font-size:15px;}
+  .cardctl{position:absolute;top:12px;right:14px;display:flex;gap:8px;align-items:center;font-family:'Fredoka';font-size:12px;color:var(--soft);z-index:2;}
+  .cardctl label{display:flex;gap:4px;align-items:center;cursor:pointer;font-weight:700;}
+  .cardctl input{width:16px;height:16px;cursor:pointer;}
+  .cardctl .pbtn{border:2px solid var(--line);background:#fff;border-radius:9px;padding:3px 9px;cursor:pointer;font-size:12px;font-family:'Fredoka';font-weight:600;}
+  .cardctl .pbtn:active{transform:translateY(1px);}
+  .picker{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+  .frame{display:inline-grid;grid-auto-flow:column;gap:10px;justify-content:center;}
+  .col{display:flex;flex-direction:column;align-items:center;gap:6px;}
+  .plabel{font-family:'Fredoka';font-weight:600;font-size:13px;letter-spacing:.5px;text-transform:uppercase;padding:3px 0;width:100%;text-align:center;border-radius:8px;}
+  .cellbox{width:62px;height:74px;border-radius:14px;border:3px solid;display:flex;align-items:center;justify-content:center;font-family:'Fredoka';font-weight:700;font-size:40px;background:#fff;}
+  .cellbox.empty{color:#cfc6b6;font-weight:500;border-color:var(--line);background:#faf6ee;}
+  .cellbox.qmark{color:#b9ad99;font-weight:700;border-color:#cdbfa6;border-style:dashed;background:#fffdf7;}
+  .ones .cellbox,.cellbox.c-ones{border-color:var(--ones);background:var(--ones-bg);color:var(--ones);}
+  .tens .cellbox,.cellbox.c-tens{border-color:var(--tens);background:var(--tens-bg);color:var(--tens);}
+  .hundreds .cellbox,.cellbox.c-hundreds{border-color:var(--hundreds);background:var(--hundreds-bg);color:var(--hundreds);}
+  .thousands .cellbox,.cellbox.c-thousands{border-color:var(--thousands);background:var(--thousands-bg);color:var(--thousands);}
+  .lab-ones{color:var(--ones);background:var(--ones-bg);}
+  .lab-tens{color:var(--tens);background:var(--tens-bg);}
+  .lab-hundreds{color:var(--hundreds);background:var(--hundreds-bg);}
+  .lab-thousands{color:var(--thousands);background:var(--thousands-bg);}
+  .key{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin:6px 0 0;}
+  .keytag{font-family:'Fredoka';font-weight:600;font-size:14px;padding:6px 12px;border-radius:999px;border:2px solid;}
+  .chart{width:100%;border-collapse:separate;border-spacing:5px;text-align:center;}
+  .chart td,.chart th{font-family:'Fredoka';font-weight:500;border-radius:10px;padding:9px 4px;font-size:15px;white-space:nowrap;}
+  .chart .rowlab{font-weight:600;text-align:left;padding-left:12px;font-size:14px;letter-spacing:.4px;}
+  .chartwrap{overflow-x:auto;}
+  .blocks{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end;justify-content:center;margin:8px 0;}
+  .bgroup{display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .bgroup .glab{font-family:'Fredoka';font-weight:600;font-size:14px;}
+  .bset{display:flex;gap:5px;align-items:flex-end;flex-wrap:wrap;max-width:240px;justify-content:center;}
+  .expand{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;font-family:'Fredoka';font-size:26px;font-weight:600;}
+  .expand.small{font-size:20px;}
+  .chip{padding:4px 12px;border-radius:12px;border:3px solid;}
+  .ttlist{display:flex;flex-direction:column;gap:6px;max-width:340px;margin:0 auto;font-family:'Fredoka';font-weight:600;font-size:20px;}
+  .ttrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 14px;border-radius:12px;border:2px solid var(--line);background:#fff;}
+  .ttrow .ans{color:var(--thousands);min-width:42px;text-align:right;}
+  .ttrow.special{background:var(--thousands-bg);border-color:var(--thousands);}
+  .ttnote{font-size:12px;color:var(--soft);font-weight:700;}
+  .ttgrid{border-collapse:separate;border-spacing:3px;margin:0 auto;font-family:'Fredoka';font-weight:700;}
+  .ttgrid th{width:44px;height:38px;text-align:center;border-radius:7px;font-size:16px;background:#f7f2e6;}
+  .ttgrid th.corner{background:var(--ink);color:#fff;}
+  .ttgrid td{padding:0;border:none;background:transparent;}
+  .gcell{width:44px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;}
+  .gnum{background:#fff;color:var(--ink);font-weight:700;font-size:15px;min-width:26px;height:23px;border-radius:7px;display:flex;align-items:center;justify-content:center;padding:0 4px;box-shadow:0 0 0 1px rgba(0,0,0,.12);}
+  .dots{display:inline-grid;gap:5px;justify-content:center;}
+  .dot{width:15px;height:15px;border-radius:50%;background:var(--thousands);}
+  .fracwrap{display:flex;flex-wrap:wrap;gap:30px;align-items:center;justify-content:center;}
+  .fracbig{font-family:'Fredoka';text-align:center;}
+  .fracnum,.fracden{font-size:56px;font-weight:700;color:var(--frac);line-height:1.05;}
+  .fracline{height:4px;background:var(--frac);width:64px;margin:4px auto;border-radius:2px;}
+  .fracword{font-size:24px;font-weight:600;margin-top:10px;color:var(--ink);}
+  .vocab{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:6px;}
+  .vchip{font-family:'Fredoka';font-weight:600;border:2px solid var(--frac);color:var(--frac);border-radius:999px;padding:6px 14px;background:var(--frac-bg);}
+  .wchips{display:flex;flex-wrap:wrap;gap:8px;}
+  .wchip{font-family:'Fredoka';font-weight:600;font-size:15px;border:2px solid var(--line);border-radius:999px;padding:6px 12px;display:inline-flex;gap:8px;align-items:center;background:#fffdf7;}
+  .wchip .wsign{font-weight:700;}
+  .wex{font-weight:700;font-size:13px;color:var(--soft);margin-top:12px;}
+  .topics{display:flex;gap:8px;flex-wrap:wrap;}
+  .topic{font-family:'Fredoka';font-size:15px;border:3px solid var(--line);background:#fff;color:var(--soft);border-radius:999px;padding:8px 16px;cursor:pointer;transition:transform .08s;}
+  .topic:active{transform:translateY(2px);}
+  .topic[aria-pressed="true"]{color:#fff;border-color:transparent;}
+  .topic.t-pv[aria-pressed="true"]{background:#5a5048;}
+  .topic.t-add[aria-pressed="true"]{background:var(--ones);}
+  .topic.t-sub[aria-pressed="true"]{background:var(--tens);}
+  .topic.t-roll[aria-pressed="true"]{background:var(--hundreds);}
+  .topic.t-times[aria-pressed="true"]{background:var(--thousands);}
+  .topic.t-frac[aria-pressed="true"]{background:var(--frac);}
+  .topic.t-words[aria-pressed="true"]{background:#3a8f86;}
+  .topic.t-carry[aria-pressed="true"]{background:#0d9488;}
+  .topic.t-borrow[aria-pressed="true"]{background:#b45309;}
+  .topic.t-count[aria-pressed="true"]{background:#5a5048;}
+  .rg-active{outline:3px solid #f6c945;outline-offset:1px;}
+  .scorebar{display:flex;align-items:center;gap:14px;justify-content:center;margin-bottom:6px;font-family:'Fredoka';font-weight:600;}
+  .stars{font-size:24px;letter-spacing:2px;min-height:30px;}
+  .qcard{text-align:center;padding:14px 10px 6px;}
+  .qask{font-family:'Fredoka';font-weight:600;font-size:22px;margin:0 0 14px;color:var(--soft);}
+  .qbig{margin:6px 0 18px;display:flex;justify-content:center;align-items:center;min-height:60px;flex-wrap:wrap;gap:8px;}
+  .bigeq{font-family:'Fredoka';font-weight:700;font-size:52px;color:var(--ink);}
+  .choices{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:480px;margin:0 auto;}
+  .choice{font-family:'Fredoka';font-weight:600;font-size:30px;border:3px solid var(--line);background:#fff;border-radius:18px;padding:18px 6px;cursor:pointer;color:var(--ink);box-shadow:var(--shadow);transition:transform .08s;min-height:76px;}
+  .choice:active{transform:translateY(2px);}
+  .choice.right{border-color:var(--good);background:var(--ones-bg);color:var(--good);}
+  .choice.wrong{border-color:#d98a3d;background:#fdeedf;color:#c8722a;opacity:.85;}
+  .choice:disabled{cursor:default;}
+  .feedback{min-height:30px;font-family:'Fredoka';font-weight:600;font-size:20px;margin:16px 0 6px;}
+  .feedback.ok{color:var(--good);}.feedback.no{color:var(--gentle);}
+  .explain{background:#fffdf7;border:3px dashed var(--line);border-radius:16px;padding:14px;margin:10px auto 0;max-width:560px;}
+  .explain p{margin:10px 0 0;font-weight:700;font-size:15px;color:var(--ink);}
+  .next{font-family:'Fredoka';font-weight:600;font-size:18px;border:none;background:var(--ink);color:#fff;border-radius:16px;padding:14px 30px;cursor:pointer;margin-top:16px;box-shadow:var(--shadow);transition:transform .08s;}
+  .next:active{transform:translateY(2px);}
+  .hidden{display:none !important;}
+  .teach{font-size:13px;color:var(--soft);font-weight:700;margin-top:10px;}
+  .printhint{font-size:13px;color:var(--soft);font-weight:700;text-align:center;margin-top:6px;}
+  @media print{
+    @page{margin:12mm;}
+    body{background:#fff;}
+    header.bar,nav.tabs,.no-print,.cardctl{display:none !important;}
+    .panel{display:none !important;}
+    .panel.show{display:block !important;}
+    body.printsel .panel{display:block !important;}
+    body.printsel .card{display:none !important;}
+    body.printsel .card.print-on{display:block !important;}
+    .card{box-shadow:none;border:2px solid #999;break-inside:avoid;margin-bottom:10px;}
+    .printable h2{padding-right:0;}
+    .cellbox,.choice{box-shadow:none;}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="bar">
+    <div class="title">
+      <div class="logo">🔢</div>
+      <div><h1 data-i="appTitle">Math Helper</h1><p data-i="appSub">Numbers · Times · Fractions · Words</p></div>
+    </div>
+    <div class="tools">
+      <button class="tbtn lang" id="langBtn" onclick="toggleLang()">Français</button>
+      <button class="tbtn sel" id="printSelBtn" onclick="printSelected()" style="display:none"></button>
+      <button class="tbtn" id="soundBtn" onclick="toggleSound()"></button>
+      <button class="tbtn" id="printBtn" onclick="printPage()"></button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" onclick="showTab('home',this)"><span class="ic">🏠</span><span data-i="tabHome">Home</span></button>
+    <button class="tab" role="tab" aria-selected="false" onclick="showTab('chart',this)"><span class="ic">📊</span><span data-i="tabChart">Chart</span></button>
+    <button class="tab" role="tab" aria-selected="false" onclick="showTab('numbers',this)"><span class="ic">🧱</span><span data-i="tabNumbers">Numbers</span></button>
+    <button class="tab" role="tab" aria-selected="false" onclick="showTab('times',this)"><span class="ic">✖️</span><span data-i="tabTimes">Times</span></button>
+    <button class="tab" role="tab" aria-selected="false" onclick="showTab('fractions',this)"><span class="ic">🍕</span><span data-i="tabFractions">Fractions</span></button>
+    <button class="tab" role="tab" aria-selected="false" onclick="showTab('words',this)"><span class="ic">🔤</span><span data-i="tabWords">Words</span></button>
+    <button class="tab" role="tab" aria-selected="false" onclick="showTab('regroup',this)"><span class="ic">🔁</span><span data-i="tabRegroup">Regroup</span></button>
+    <button class="tab" role="tab" aria-selected="false" onclick="showTab('practice',this)"><span class="ic">🎯</span><span data-i="tabPractice">Practice</span></button>
+  </nav>
+
+  <!-- CHART -->
+  <!-- HOME -->
+  <section class="panel show" id="home">
+    <div class="card">
+      <h2 data-i="homeT"></h2>
+      <p class="lead" data-i="homeL" style="margin:0"></p>
+    </div>
+    <div class="card">
+      <h2 data-i="homeSectionsT"></h2>
+      <div class="guidegrid" id="guideGrid"></div>
+    </div>
+    <div class="card">
+      <h2 data-i="homeTipsT"></h2>
+      <p class="lead" data-i="homeTips" style="margin:0"></p>
+    </div>
+  </section>
+
+  <section class="panel" id="chart">
+    <div class="card printable" id="card-place">
+      <h2 data-i="chartT1">What place is each number in?</h2>
+      <p class="lead" data-i="chartL1"></p>
+      <div style="text-align:center"><div class="frame" id="demoFrame"></div></div>
+      <div class="expand" style="margin-top:18px" id="demoExpand"></div>
+      <div class="key" id="keyRow"></div>
+    </div>
+    <div class="card printable" id="card-count">
+      <h2 data-i="chartT2">Count the spots</h2>
+      <p class="lead" data-i="chartL2"></p>
+      <div class="chartwrap"><table class="chart" id="skipChart"></table></div>
+    </div>
+    <div class="card printable" id="card-snap">
+      <h2 data-i="chartT3">Snap the pieces together</h2>
+      <p class="lead" data-i="chartL3"></p>
+      <div id="snapExamples"></div>
+    </div>
+    <div class="card printable" id="card-break">
+      <h2 data-i="chartT4">Break a number apart</h2>
+      <p class="lead" data-i="chartL4"></p>
+      <div id="breakExamples"></div>
+    </div>
+  </section>
+
+  <!-- NUMBERS -->
+  <section class="panel" id="numbers">
+    <div class="card no-print">
+      <h2 data-i="numT">Pick a number to build 🧱</h2>
+      <p class="lead" data-i="numL"></p>
+      <div class="picker" id="numPicker"></div>
+    </div>
+    <div class="card printable" id="card-numbers">
+      <div style="text-align:center"><div class="frame" id="numFrame"></div></div>
+      <div class="blocks" id="numBlocks"></div>
+      <div class="expand" id="numExpand" style="margin-top:14px"></div>
+      <p class="teach" style="text-align:center" id="numSay"></p>
+    </div>
+  </section>
+
+  <!-- TIMES -->
+  <section class="panel" id="times">
+    <div class="card no-print">
+      <h2 data-i="timesT">Times tables ✖️</h2>
+      <p class="lead" data-i="timesL"></p>
+      <div class="picker" id="timesPicker"></div>
+      <div style="text-align:center;margin-top:12px"><button class="tbtn" id="hideAnsBtn" onclick="toggleHideAns()"></button></div>
+    </div>
+    <div class="card printable" id="card-table"></div>
+    <div class="card printable" id="card-grid">
+      <h2 data-i="gridT">The whole grid (learn by heart)</h2>
+      <p class="lead" data-i="gridL"></p>
+      <div class="chartwrap"><div id="timesGrid" style="display:flex;justify-content:center"></div></div>
+    </div>
+  </section>
+
+  <!-- FRACTIONS -->
+  <section class="panel" id="fractions">
+    <div class="card no-print">
+      <h2 data-i="fracT">Fractions 🍕</h2>
+      <p class="lead" data-i="fracL"></p>
+      <div class="picker" id="fracPicker"></div>
+    </div>
+    <div class="card printable" id="card-fracdisplay">
+      <div class="fracwrap" id="fracDisplay"></div>
+      <div class="explain" id="fracExplain" style="margin-top:18px"></div>
+    </div>
+    <div class="card printable" id="card-fracwords">
+      <h2 data-i="fracWordsT">Fraction words</h2>
+      <p class="lead" data-i="fracWordsL"></p>
+      <div class="vocab" id="fracVocab"></div>
+    </div>
+  </section>
+
+  <!-- WORDS -->
+  <section class="panel" id="words">
+    <div class="card no-print">
+      <h2 data-i="wordsT">Words that tell you the sign 🔤</h2>
+      <p class="lead" data-i="wordsL"></p>
+    </div>
+    <div id="wordsContainer"></div>
+  </section>
+
+  <!-- REGROUP -->
+  <section class="panel" id="regroup">
+    <div class="card printable" id="card-rg-intro">
+      <h2 data-i="rgIntroT"></h2>
+      <p class="lead" data-i="rgIntroL"></p>
+      <div id="rgIntro"></div>
+    </div>
+    <div class="card printable" id="card-rg-steps">
+      <h2 data-i="rgStepperT"></h2>
+      <div class="no-print" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:14px">
+        <button class="tbtn" onclick="rgPick('+')" data-i="rgAddEx"></button>
+        <button class="tbtn" onclick="rgPick('-')" data-i="rgSubEx"></button>
+        <button class="tbtn" onclick="rgAnother()" data-i="rgAnother"></button>
+      </div>
+      <div id="rgDiagram" style="display:flex;justify-content:center;margin:10px 0"></div>
+      <div class="explain" id="rgText" style="text-align:center"></div>
+      <div class="no-print" style="display:flex;gap:12px;justify-content:center;align-items:center;margin-top:14px">
+        <button class="tbtn" onclick="rgGo(-1)" data-i="rgPrev"></button>
+        <span id="rgCount" class="fred" style="font-weight:600;color:var(--soft)"></span>
+        <button class="tbtn" onclick="rgGo(1)" data-i="rgNext"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRACTICE -->
+  <section class="panel" id="practice">
+    <div class="card no-print" id="quizSetup">
+      <h2 data-i="pracT">Choose what to practice 🎯</h2>
+      <p class="lead" data-i="pracL"></p>
+      <div class="topics" id="topicRow"></div>
+      <h3 data-i="qCountT" style="font-size:18px;margin:22px 0 8px"></h3>
+      <div class="topics" id="countRow"></div>
+      <div style="text-align:center;margin-top:22px"><button class="next" id="startBtn" onclick="startQuiz()"></button></div>
+    </div>
+    <div class="card no-print hidden" id="quizPlay">
+      <div class="scorebar"><span id="progText"></span><span class="stars" id="starRow"></span></div>
+      <div class="qcard">
+        <p class="qask" id="qAsk"></p>
+        <div class="qbig" id="qBig"></div>
+        <div class="choices" id="qChoices"></div>
+        <div class="feedback" id="qFeedback"></div>
+        <div class="explain hidden" id="qExplain"></div>
+        <button class="next hidden" id="nextBtn" onclick="nextQuestion()"></button>
+      </div>
+      <div style="text-align:center;margin-top:10px"><button class="tbtn no-print" id="quitBtn" onclick="backToSetup()"></button></div>
+    </div>
+    <div class="card no-print hidden" id="quizDone">
+      <h2 data-i="doneT" style="text-align:center"></h2>
+      <div id="doneBody" style="text-align:center"></div>
+      <div style="text-align:center;margin-top:18px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="next" id="againBtn" onclick="startQuiz()"></button>
+        <button class="tbtn" id="changeBtn" onclick="backToSetup()"></button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+let LANG='en';
+const L=(en,fr)=>LANG==='fr'?fr:en;
+const STR={
+  appTitle:{en:"Math Helper",fr:"Aide-Maths"},
+  appSub:{en:"Place value · Multiplication · Fractions · Regrouping",fr:"Valeur de position · Multiplication · Fractions · Regroupement"},
+  tabChart:{en:"Place Value",fr:"Valeur de position"},tabNumbers:{en:"Base-Ten Blocks",fr:"Base dix"},tabTimes:{en:"Multiplication",fr:"Multiplication"},
+  tabHome:{en:"Home",fr:"Accueil"},
+  homeT:{en:"Welcome! 👋",fr:"Bienvenue ! 👋"},
+  homeL:{en:"This is a toolbox for second-grade number sense. Each tab teaches one idea — here is what they cover. Tap a card to jump straight there.",fr:"Voici une boîte à outils pour le sens du nombre en 2e année. Chaque onglet enseigne une idée — voici ce qu'ils contiennent. Touche une carte pour t'y rendre."},
+  homeSectionsT:{en:"The sections",fr:"Les sections"},
+  homeTipsT:{en:"Good to know",fr:"Bon à savoir"},
+  homeTips:{en:"Use <b>Français / English</b> (top right) to switch language, <b>🖨️ Print</b> to print a whole page or just the pieces you tick, and <b>🔊 Sound</b> to mute or unmute.",fr:"Utilise <b>Français / English</b> (en haut à droite) pour changer de langue, <b>🖨️ Imprimer</b> pour imprimer une page entière ou seulement les morceaux cochés, et <b>🔊 Son</b> pour activer ou couper le son."},
+  homeOpen:{en:"Open ➜",fr:"Ouvrir ➜"},
+  tabFractions:{en:"Fractions",fr:"Fractions"},tabWords:{en:"Key Words",fr:"Mots-clés"},tabPractice:{en:"Practice",fr:"Exercices"},
+  tabRegroup:{en:"Regrouping",fr:"Regroupement"},
+  rgIntroT:{en:"Trading 10 for 1 (and back)",fr:"Échanger 10 contre 1 (et l'inverse)"},
+  rgIntroL:{en:"Only one digit fits in each spot. When a spot reaches 10, you trade those 10 for ONE in the next spot up. Going backwards, you can break 1 into 10 of the spot below.",fr:"Un seul chiffre tient dans chaque place. Quand une place atteint 10, on échange ces 10 contre UN dans la place suivante. À l'envers, on peut casser 1 en 10 de la place d'en dessous."},
+  rgStepperT:{en:"Watch it step by step",fr:"Regarde étape par étape"},
+  rgAddEx:{en:"➕ Carry example",fr:"➕ Exemple retenue"},
+  rgSubEx:{en:"➖ Borrow example",fr:"➖ Exemple emprunt"},
+  rgAnother:{en:"🎲 Another",fr:"🎲 Un autre"},
+  rgPrev:{en:"◀ Back",fr:"◀ Retour"},rgNext:{en:"Next ▶",fr:"Suivant ▶"},rgStep:{en:"Step",fr:"Étape"},
+  chartT1:{en:"What place is each number in?",fr:"Quelle est la place de chaque chiffre ?"},
+  chartL1:{en:"The <b>spot</b> a digit sits in tells you how big it is. Same digit, different spot, different size.",fr:"La <b>place</b> d'un chiffre indique sa grandeur. Même chiffre, place différente, valeur différente."},
+  chartT2:{en:"Count the spots",fr:"Compte par bonds"},
+  chartL2:{en:"Each row is a place. Read across to count by 1s, by 10s, by 100s, by 1000s.",fr:"Chaque ligne est une place. Lis de gauche à droite : par 1, par 10, par 100, par 1000."},
+  chartT3:{en:"Snap the pieces together",fr:"Assemble les morceaux"},
+  chartL3:{en:"A big number is just its places added up. Keep the columns lined up.",fr:"Un grand nombre, c'est juste ses places additionnées. Garde les colonnes alignées."},
+  chartT4:{en:"Break a number apart",fr:"Sépare un nombre"},
+  chartL4:{en:"Every number can be split into its places. Same idea, going backwards.",fr:"Chaque nombre peut se séparer en ses places. La même idée, à l'envers."},
+  numT:{en:"Pick a number to build 🧱",fr:"Choisis un nombre à construire 🧱"},
+  numL:{en:"Tap a number. Watch it turn into blocks and into its places.",fr:"Touche un nombre. Regarde-le se transformer en blocs et en places."},
+  timesT:{en:"Times tables ✖️",fr:"Les tables de multiplication ✖️"},
+  timesL:{en:"Tap a number to see its table. Tap 0 or 1 for the special rules.",fr:"Touche un nombre pour voir sa table. Touche 0 ou 1 pour les règles spéciales."},
+  gridT:{en:"The whole grid (learn by heart)",fr:"La grille complète (à apprendre par cœur)"},
+  gridL:{en:"Find the row and the column — the answer is where they meet. Each answer's left half wears its row colour, its right half the column colour.",fr:"Trouve la ligne et la colonne — la réponse est à leur croisement. La moitié gauche de la réponse a la couleur de sa ligne, la moitié droite celle de sa colonne."},
+  hideShow:{en:"🙈 Hide answers",fr:"🙈 Cacher les réponses"},showAns:{en:"👀 Show answers",fr:"👀 Montrer les réponses"},
+  fracT:{en:"Fractions 🍕",fr:"Les fractions 🍕"},
+  fracL:{en:"Tap a fraction. The pie shows how much of the whole it is.",fr:"Touche une fraction. La tarte montre quelle part du tout c'est."},
+  fracWordsT:{en:"Fraction words",fr:"Les mots des fractions"},
+  fracWordsL:{en:"Each fraction has a name. Here are the most common ones.",fr:"Chaque fraction a un nom. Voici les plus courantes."},
+  wordsT:{en:"Words that tell you the sign 🔤",fr:"Les mots qui donnent le signe 🔤"},
+  wordsL:{en:"Word problems hide the sign inside a word or a little phrase. These tell you which one to use.",fr:"Les problèmes cachent le signe dans un mot ou une petite phrase. Ceux-ci te disent lequel utiliser."},
+  pracT:{en:"Choose what to practice 🎯",fr:"Choisis quoi pratiquer 🎯"},
+  pracL:{en:"Pick your topics and how many questions, then start. Topics stay locked during the quiz.",fr:"Choisis tes sujets et le nombre de questions, puis commence. Les sujets restent fixes pendant le quiz."},
+  qCountT:{en:"How many questions?",fr:"Combien de questions ?"},
+  startBtn:{en:"▶ Start quiz",fr:"▶ Commencer le quiz"},
+  qProgress:{en:"Question",fr:"Question"},
+  seeResults:{en:"See results ➜",fr:"Voir les résultats ➜"},
+  doneT:{en:"Quiz finished! 🎯",fr:"Quiz terminé ! 🎯"},
+  again:{en:"🔁 Play again",fr:"🔁 Rejouer"},
+  change:{en:"⚙ Change settings",fr:"⚙ Changer les réglages"},
+  msgPerfect:{en:"Perfect score! 🌟",fr:"Score parfait ! 🌟"},
+  msgGreat:{en:"Great job! 🎉",fr:"Excellent travail ! 🎉"},
+  msgGood:{en:"Nice work! 👍",fr:"Bon travail ! 👍"},
+  msgTry:{en:"Good effort — keep practicing! 💪",fr:"Bel effort — continue de pratiquer ! 💪"},
+  print:{en:"🖨️ Print",fr:"🖨️ Imprimer"},printPage:{en:"🖨️ Print page",fr:"🖨️ Imprimer la page"},
+  printSel:{en:"🖨️ Print set",fr:"🖨️ Imprimer la sélection"},
+  inc:{en:"Add to print set",fr:"Ajouter à la sélection"},printThis:{en:"Print this segment",fr:"Imprimer ce segment"},
+  soundOn:{en:"🔊 Sound",fr:"🔊 Son"},soundOff:{en:"🔇 Sound",fr:"🔇 Son"},langBtn:{en:"Français",fr:"English"},
+  score:{en:"Score",fr:"Score"},next:{en:"Next ➜",fr:"Suivant ➜"},
+  fbOk:{en:"⭐ Yes! You just knew it.",fr:"⭐ Oui ! Tu le savais déjà."},fbNo:{en:"Almost — look again.",fr:"Presque — regarde encore."},
+  build:{en:"build",fr:"fais"},is:{en:"is",fr:"c'est"},
+  whichSign:{en:"Which sign goes with this?",fr:"Quel signe va avec ça ?"},
+  whichFrac:{en:"What fraction is shaded?",fr:"Quelle fraction est coloriée ?"},
+  whichWord:{en:"Which word means this fraction?",fr:"Quel mot veut dire cette fraction ?"}
+};
+
+/* palette for 0..12 */
+const PAL=['#6b7280','#e11d48','#16a34a','#7c3aed','#f97316','#0d9488','#db2777','#2563eb','#ca8a04','#4f46e5','#b45309','#0891b2','#c026d3'];
+
+const PLACES=[
+  {key:'thousands',short:{en:'Th',fr:'M'},name:{en:'Thousands',fr:'Milliers'},val:1000},
+  {key:'hundreds', short:{en:'H', fr:'C'},name:{en:'Hundreds', fr:'Centaines'},val:100},
+  {key:'tens',     short:{en:'T', fr:'D'},name:{en:'Tens',     fr:'Dizaines'},val:10},
+  {key:'ones',     short:{en:'O', fr:'U'},name:{en:'Ones',     fr:'Unités'},val:1},
+];
+const WORD={thousands:{en:['thousand','thousands'],fr:['millier','milliers']},hundreds:{en:['hundred','hundreds'],fr:['centaine','centaines']},tens:{en:['ten','tens'],fr:['dizaine','dizaines']},ones:{en:['one','ones'],fr:['unité','unités']}};
+function pword(key,count){const p=WORD[key][LANG];return count>1?p[1]:p[0];}
+const rand=n=>Math.floor(Math.random()*n);const pick=a=>a[rand(a.length)];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rand(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;}
+function digits(n){return{thousands:Math.floor(n/1000)%10,hundreds:Math.floor(n/100)%10,tens:Math.floor(n/10)%10,ones:n%10};}
+
+function frameHTML(n,places=4,opts={}){
+  const d=digits(n);const use=PLACES.slice(4-places);let html='';
+  use.forEach(p=>{const has=(opts.showAll)?true:(n>=p.val)||(p.key==='ones');html+=`<div class="col ${p.key}"><div class="plabel lab-${p.key}">${p.short[LANG]}</div><div class="cellbox ${has?'c-'+p.key:'empty'}">${has?d[p.key]:'·'}</div></div>`;});
+  return `<div class="frame">${html}</div>`;
+}
+function expandInner(n){
+  const d=digits(n);const parts=[];PLACES.forEach(p=>{if(d[p.key]>0)parts.push({v:d[p.key]*p.val,key:p.key});});if(parts.length===0)parts.push({v:0,key:'ones'});
+  let html=`<span class="chip" style="border-color:var(--ink)">${n}</span><span>=</span>`;
+  parts.forEach((p,i)=>{html+=`<span class="chip" style="border-color:var(--${p.key});color:var(--${p.key})">${p.v}</span>`;if(i<parts.length-1)html+='<span>+</span>';});
+  return html;
+}
+function expandHTML(n,small){return `<div class="expand${small?' small':''}">${expandInner(n)}</div>`;}
+function headerRow(places){const use=PLACES.slice(4-places);let h='<div style="display:flex;gap:8px;justify-content:flex-end;margin-bottom:4px;padding-left:26px">';use.forEach(p=>{h+=`<div class="plabel lab-${p.key}" style="width:46px">${p.short[LANG]}</div>`;});return h+'</div>';}
+function frameRow(n,places,sign='',blank=false){
+  const d=digits(n);const use=PLACES.slice(4-places);
+  let h=`<div style="display:flex;gap:8px;justify-content:flex-end;align-items:center;margin:3px 0"><span style="width:18px;font-family:Fredoka;font-weight:700;font-size:22px;color:var(--soft)">${sign}</span>`;
+  use.forEach(p=>{if(blank){h+=`<div class="cellbox qmark" style="width:46px;height:48px;font-size:26px">?</div>`;return;}const show=n>=p.val||p.key==='ones';h+=`<div class="cellbox ${show?('c-'+p.key):'empty'}" style="width:46px;height:48px;font-size:26px">${show?d[p.key]:''}</div>`;});
+  return h+'</div>';
+}
+function stackedSum(a,b,places,hide=false){return `<div style="display:inline-block">${headerRow(places)}${frameRow(a,places)}${frameRow(b,places,'+')}<div style="border-top:3px solid var(--ink);margin:4px 2px"></div>${frameRow(a+b,places,'',hide)}</div>`;}
+function stackedDiff(a,t,places,hide=false){return `<div style="display:inline-block">${headerRow(places)}${frameRow(a,places)}${frameRow(t,places,'−')}<div style="border-top:3px solid var(--ink);margin:4px 2px"></div>${frameRow(a-t,places,'',hide)}</div>`;}
+const C={ones:'var(--ones)',tens:'var(--tens)',hundreds:'var(--hundreds)',thousands:'var(--thousands)'};
+const bUnit=c=>`<div style="width:14px;height:14px;border-radius:3px;background:${c};border:1px solid rgba(0,0,0,.15)"></div>`;
+const bRod=c=>`<div style="width:14px;height:74px;border-radius:3px;background:repeating-linear-gradient(${c},${c} 5px,rgba(255,255,255,.5) 5px,rgba(255,255,255,.5) 7px);border:1px solid rgba(0,0,0,.15)"></div>`;
+const bFlat=c=>`<div style="width:58px;height:58px;border-radius:4px;background:${c};border:1px solid rgba(0,0,0,.2);background-image:linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);background-size:6px 6px"></div>`;
+const bCube=c=>`<svg width="46" height="44" viewBox="0 0 56 52" style="display:block;overflow:visible">
+  <polygon points="8,18 38,18 38,48 8,48" fill="${c}"/>
+  <polygon points="8,18 20,8 50,8 38,18" fill="${c}"/><polygon points="8,18 20,8 50,8 38,18" fill="#fff" opacity="0.30"/>
+  <polygon points="38,18 50,8 50,38 38,48" fill="${c}"/><polygon points="38,18 50,8 50,38 38,48" fill="#000" opacity="0.20"/>
+  <g stroke="rgba(255,255,255,.45)" stroke-width="1">
+    <line x1="14" y1="18" x2="14" y2="48"/><line x1="20" y1="18" x2="20" y2="48"/><line x1="26" y1="18" x2="26" y2="48"/><line x1="32" y1="18" x2="32" y2="48"/>
+    <line x1="8" y1="24" x2="38" y2="24"/><line x1="8" y1="30" x2="38" y2="30"/><line x1="8" y1="36" x2="38" y2="36"/><line x1="8" y1="42" x2="38" y2="42"/>
+  </g>
+  <g stroke="rgba(0,0,0,.22)" stroke-width="1">
+    <line x1="44" y1="11" x2="44" y2="41"/><line x1="38" y1="28" x2="50" y2="18"/>
+    <line x1="26" y1="8" x2="14" y2="18"/><line x1="38" y1="8" x2="26" y2="18"/>
+  </g>
+  <polygon points="8,18 20,8 50,8 50,38 38,48 8,48" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="1.6" stroke-linejoin="round"/>
+  <g stroke="rgba(0,0,0,.45)" stroke-width="1.4"><line x1="8" y1="18" x2="38" y2="18"/><line x1="38" y1="18" x2="38" y2="48"/><line x1="38" y1="18" x2="50" y2="8"/></g>
+</svg>`;
+function blocksHTML(n,labels=true){const d=digits(n);let h='';function g(count,maker,key){if(count<=0)return;let s='';for(let i=0;i<count;i++)s+=maker(C[key]);h+=`<div class="bgroup"><div class="bset">${s}</div>${labels?`<div class="glab" style="color:${C[key]}">${count} ${pword(key,count)}</div>`:''}</div>`;}g(d.thousands,bCube,'thousands');g(d.hundreds,bFlat,'hundreds');g(d.tens,bRod,'tens');g(d.ones,bUnit,'ones');return h;}
+function dotArray(rows,cols){if(rows<=0||cols<=0)return '<span class="ttnote">0</span>';let d='';for(let i=0;i<rows*cols;i++)d+='<div class="dot"></div>';return `<div class="dots" style="grid-template-columns:repeat(${cols},15px)">${d}</div>`;}
+
+/* CHART */
+const GUIDE=[
+  {id:'chart',ic:'📊',color:'tens',name:{en:'Place Value',fr:'Valeur de position'},desc:{en:'Which spot each digit sits in — ones, tens, hundreds, thousands — and how numbers come apart and snap back together.',fr:"La place de chaque chiffre — unités, dizaines, centaines, milliers — et comment les nombres se décomposent et se recomposent."}},
+  {id:'numbers',ic:'🧱',color:'ones',name:{en:'Base-Ten Blocks',fr:'Base dix'},desc:{en:'Any number built from unit cubes, ten-rods, hundred-flats and thousand-cubes, shown with its expanded form.',fr:"N'importe quel nombre construit avec des cubes-unités, des barres, des plaques et des gros cubes, avec sa forme décomposée."}},
+  {id:'times',ic:'✖️',color:'thousands',name:{en:'Multiplication',fr:'Multiplication'},desc:{en:'Times tables 0–12 to learn by heart, the ×0 and ×1 rules, and a colour-coded grid.',fr:'Les tables de 0 à 12 à apprendre par cœur, les règles ×0 et ×1, et une grille en couleurs.'}},
+  {id:'fractions',ic:'🍕',color:'frac',name:{en:'Fractions',fr:'Fractions'},desc:{en:'Halves, thirds, quarters and more shown as pies, with the fraction and the word that names it.',fr:'Demis, tiers, quarts et plus, montrés en tartes, avec la fraction et le mot qui la nomme.'}},
+  {id:'words',ic:'🔤',color:'hundreds',name:{en:'Key Words',fr:'Mots-clés'},desc:{en:'The words in a problem that tell you to add, subtract, multiply or divide.',fr:"Les mots d'un problème qui disent d'additionner, soustraire, multiplier ou diviser."}},
+  {id:'regroup',ic:'🔁',color:'tens',name:{en:'Regrouping',fr:'Regroupement'},desc:{en:'Carrying and borrowing — trading 10 for 1 (and back) — explained step by step.',fr:"La retenue et l'emprunt — échanger 10 contre 1 (et l'inverse) — expliqués étape par étape."}},
+  {id:'practice',ic:'🎯',color:'ones',name:{en:'Practice',fr:'Exercices'},desc:{en:'Build a quiz from any topics, choose how many questions, and get a score.',fr:'Crée un quiz avec les sujets de ton choix, choisis le nombre de questions et obtiens un score.'}},
+];
+function buildHome(){document.getElementById('guideGrid').innerHTML=GUIDE.map(g=>`<div class="guidetile" style="border-color:var(--${g.color})" onclick="goTab('${g.id}')"><div class="gt-ic">${g.ic}</div><div class="gt-name" style="color:var(--${g.color})">${g.name[LANG]}</div><div class="gt-desc">${g.desc[LANG]}</div><div class="gt-open" style="color:var(--${g.color})">${STR.homeOpen[LANG]}</div></div>`).join('');}
+function goTab(id){const btn=[...document.querySelectorAll('.tab[role=tab]')].find(b=>(b.getAttribute('onclick')||'').includes(`'${id}'`));if(btn){btn.click();window.scrollTo({top:0,behavior:'smooth'});}}
+function buildChart(){
+  document.getElementById('demoFrame').innerHTML=frameHTML(2568,4,{showAll:true});
+  document.getElementById('demoExpand').innerHTML=expandInner(2568);
+  document.getElementById('keyRow').innerHTML=PLACES.map(p=>`<span class="keytag lab-${p.key}" style="border-color:var(--${p.key})">${p.name[LANG]}</span>`).join('');
+  const rows=[{key:'ones',m:1},{key:'tens',m:10},{key:'hundreds',m:100},{key:'thousands',m:1000}];
+  document.getElementById('skipChart').innerHTML=rows.map(r=>{const pl=PLACES.find(p=>p.key===r.key);let row=`<tr><td class="rowlab lab-${r.key}">${pl.name[LANG].toUpperCase()}</td>`;for(let i=1;i<=10;i++)row+=`<td class="lab-${r.key}">${i*r.m}</td>`;return row+'</tr>';}).join('');
+  const ex=[[60,4],[40,3],[500,30],[300,50],[200,70],[100,45],[1000,297],[2000,560]];
+  document.getElementById('snapExamples').innerHTML='<div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center">'+ex.map(([a,b])=>{const need=(a+b)>=1000?4:(a+b)>=100?3:2;return `<div style="text-align:center"><div style="font-family:Fredoka;font-size:14px;color:var(--soft);font-weight:600;margin-bottom:6px">${L('build','fais')} ${a}+${b}</div>${stackedSum(a,b,need,false)}</div>`;}).join('')+'</div>';
+  const br=[34,86,256,408,720,1297,3406];
+  document.getElementById('breakExamples').innerHTML='<div style="display:flex;flex-direction:column;gap:12px;align-items:center">'+br.map(n=>expandHTML(n,true)).join('')+'</div>';
+}
+
+/* NUMBERS */
+const numNums=[5,8,19,40,43,67,90,100,256,352,408,605,720,999,1000,1297,2568,3406,5070,9999];
+let curNum=352;
+function buildNumbers(){document.getElementById('numPicker').innerHTML=numNums.map(n=>`<button class="tab" style="font-size:19px;padding:10px 15px" onclick="showNumber(${n})">${n}</button>`).join('');showNumber(curNum);}
+function showNumber(n){curNum=n;document.getElementById('numFrame').innerHTML=frameHTML(n,4);document.getElementById('numExpand').innerHTML=expandInner(n);document.getElementById('numBlocks').innerHTML=blocksHTML(n,true);const d=digits(n);const says=[];PLACES.forEach(p=>{if(d[p.key]>0)says.push(`${d[p.key]} ${pword(p.key,d[p.key])}`);});document.getElementById('numSay').innerHTML=`<b>${n}</b> ${L('is',"c'est")} `+says.join(' + ')+'.';}
+
+/* TIMES */
+let curTimes=2,hideAns=false;
+function buildTimes(){let p='';for(let i=0;i<=12;i++)p+=`<button class="tab" style="font-size:20px;padding:9px 15px;color:${PAL[i]}" onclick="showTimes(${i})">${i}</button>`;document.getElementById('timesPicker').innerHTML=p;document.getElementById('hideAnsBtn').textContent=hideAns?STR.showAns[LANG]:STR.hideShow[LANG];showTimes(curTimes);buildTimesGrid();}
+function toggleHideAns(){hideAns=!hideAns;document.getElementById('hideAnsBtn').textContent=hideAns?STR.showAns[LANG]:STR.hideShow[LANG];showTimes(curTimes);}
+function showTimes(n){
+  curTimes=n;const card=document.getElementById('card-table');let inner;
+  if(n===0)inner=`<h2 style="color:var(--thousands)">× 0</h2><p class="lead">${L('Any number times 0 is always 0. Zero groups means you have nothing!',"Tout nombre fois 0 fait toujours 0. Zéro groupe, ça veut dire rien du tout !")}</p><div class="ttlist">${[3,7,9].map(x=>ttRow(x,0)).join('')}</div>`;
+  else if(n===1)inner=`<h2 style="color:var(--thousands)">× 1</h2><p class="lead">${L('Any number times 1 stays the same. One group is just the number itself.',"Tout nombre fois 1 reste pareil. Un seul groupe, c'est juste le nombre lui-même.")}</p><div class="ttlist">${[3,7,9].map(x=>ttRow(x,1)).join('')}</div>`;
+  else{let rows='';for(let i=0;i<=12;i++)rows+=ttRow(n,i,i===0||i===1);inner=`<h2 style="color:${PAL[n]}">${L('Table of','La table de')} ${n}</h2><div class="ttlist">${rows}</div>`;}
+  card.innerHTML=inner;ensureCtl(card);
+}
+function ttRow(a,b,special){const note=b===0?L('(0 groups = 0)','(0 groupe = 0)'):b===1?L('(1 group = itself)','(1 groupe = lui-même)'):'';const ans=hideAns?'?':a*b;return `<div class="ttrow${special?' special':''}"><span>${a} × ${b} =</span><span style="display:flex;align-items:center;gap:10px"><span class="ttnote">${note}</span><span class="ans">${ans}</span></span></div>`;}
+function buildTimesGrid(){
+  let t='<table class="ttgrid"><tr><th class="corner">×</th>';
+  for(let c=0;c<=12;c++)t+=`<th style="color:${PAL[c]}">${c}</th>`;t+='</tr>';
+  for(let r=0;r<=12;r++){t+=`<tr><th style="color:${PAL[r]}">${r}</th>`;for(let c=0;c<=12;c++){t+=`<td><div class="gcell" style="background:linear-gradient(to right,${PAL[r]} 0 50%,${PAL[c]} 50% 100%)"><span class="gnum">${r*c}</span></div></td>`;}t+='</tr>';}
+  document.getElementById('timesGrid').innerHTML=t+'</table>';
+}
+
+/* FRACTIONS */
+const FRACTIONS=[
+  {num:1,den:2,word:{en:'one half',fr:'un demi'},extra:{en:'also called a half',fr:'on dit aussi une moitié'}},
+  {num:1,den:3,word:{en:'one third',fr:'un tiers'}},
+  {num:2,den:3,word:{en:'two thirds',fr:'deux tiers'}},
+  {num:1,den:4,word:{en:'one quarter',fr:'un quart'},extra:{en:'also called a fourth',fr:'un quart'}},
+  {num:3,den:4,word:{en:'three quarters',fr:'trois quarts'}},
+  {num:1,den:5,word:{en:'one fifth',fr:'un cinquième'}},
+  {num:1,den:6,word:{en:'one sixth',fr:'un sixième'}},
+  {num:1,den:8,word:{en:'one eighth',fr:'un huitième'}},
+];
+let curFrac=0;
+function pieSVG(num,den,size=170){const r=size/2-6,cx=size/2,cy=size/2;let p='';for(let i=0;i<den;i++){const a0=(i/den)*2*Math.PI-Math.PI/2,a1=((i+1)/den)*2*Math.PI-Math.PI/2;const x0=(cx+r*Math.cos(a0)).toFixed(1),y0=(cy+r*Math.sin(a0)).toFixed(1),x1=(cx+r*Math.cos(a1)).toFixed(1),y1=(cy+r*Math.sin(a1)).toFixed(1);const large=(a1-a0)>Math.PI?1:0;p+=`<path d="M${cx},${cy} L${x0},${y0} A${r},${r} 0 ${large} 1 ${x1},${y1} Z" fill="${i<num?'var(--frac)':'#fff'}" stroke="#5a5048" stroke-width="2.5"/>`;}return `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">${p}</svg>`;}
+function buildFractions(){document.getElementById('fracPicker').innerHTML=FRACTIONS.map((f,i)=>`<button class="tab" style="font-size:22px;padding:9px 16px" onclick="showFraction(${i})">${f.num}/${f.den}</button>`).join('');document.getElementById('fracVocab').innerHTML=FRACTIONS.map(f=>`<span class="vchip">${f.word[LANG]} = ${f.num}/${f.den}</span>`).join('');showFraction(curFrac);}
+function showFraction(i){curFrac=i;const f=FRACTIONS[i];document.getElementById('fracDisplay').innerHTML=`<div>${pieSVG(f.num,f.den)}</div><div class="fracbig"><div class="fracnum">${f.num}</div><div class="fracline"></div><div class="fracden">${f.den}</div><div class="fracword">${f.word[LANG]}</div></div>`;document.getElementById('fracExplain').innerHTML=`<p><b style="color:var(--frac)">${L('Top number','Le chiffre du haut')} (${f.num})</b> = ${L('how many pieces are coloured.','combien de morceaux sont coloriés.')}</p><p><b style="color:var(--frac)">${L('Bottom number','Le chiffre du bas')} (${f.den})</b> = ${L('how many equal pieces make the whole pie.','combien de morceaux égaux font toute la tarte.')}</p>${f.extra?`<p>${f.num}/${f.den} — ${f.extra[LANG]}.</p>`:''}`;}
+
+/* WORDS */
+const WORDS=[
+  {op:'+',key:'add',color:'ones',title:{en:'Add',fr:'Addition'},
+   words:{en:['add','plus','sum of','in all','altogether','in total','more','more than','increased by','added to','put together','combined','how many in all'],
+          fr:['ajoute','plus','la somme de','en tout','au total','de plus','plus que','augmenté de','ajouté à','mis ensemble','ensemble','combien en tout']},
+   ex:{en:'“Sam has 4 and gets 3 more.”',fr:'« Sam a 4 et en reçoit 3 de plus. »'}},
+  {op:'−',key:'sub',color:'tens',title:{en:'Subtract',fr:'Soustraction'},
+   words:{en:['take away','spends','minus','left','how many left','fewer','fewer than','less than','gives away','decreased by','the difference between','how many more','how much change'],
+          fr:['enlève','dépense','moins','il reste','combien il reste','de moins','moins que','donne','diminué de','la différence entre','combien de plus','combien de moins']},
+   ex:{en:'“Sophia spends 3 dollars.”',fr:'« Sophia dépense 3 dollars. »'}},
+  {op:'×',key:'mul',color:'thousands',title:{en:'Multiply',fr:'Multiplication'},
+   words:{en:['times','each','in each','groups of','rows of','double','twice as many','per','for each','product of','multiplied by','times as many'],
+          fr:['fois','chaque','dans chaque','groupes de','rangées de','le double','deux fois plus','par','pour chaque','le produit de','multiplié par','fois plus']},
+   ex:{en:'“5 bags with 3 in each.”',fr:'« 5 sacs avec 3 dans chacun. »'}},
+  {op:'÷',key:'div',color:'frac',title:{en:'Divide',fr:'Division'},
+   words:{en:['share','split','split into','divided by','shared equally','each gets','how many groups','equal groups','half of','split between','divide into'],
+          fr:['partage','sépare','séparé en','divisé par','partagé également','chacun reçoit','combien de groupes','groupes égaux','la moitié de','partagé entre','divise en']},
+   ex:{en:'“Share 12 among 3 friends.”',fr:'« Partage 12 entre 3 amis. »'}},
+];
+function buildWords(){
+  document.getElementById('wordsContainer').innerHTML=WORDS.map(w=>`
+    <div class="card printable" id="card-word-${w.key}" style="border-color:var(--${w.color})">
+      <h3 style="color:var(--${w.color});font-size:22px;margin:0 0 10px;padding-right:70px">${w.title[LANG]} &nbsp;${w.op}</h3>
+      <div class="wchips">${w.words[LANG].map(word=>`<span class="wchip" style="border-color:var(--${w.color})">${word}<span class="wsign" style="color:var(--${w.color})">${w.op}</span></span>`).join('')}</div>
+      <div class="wex">${w.ex[LANG]} → <b style="color:var(--${w.color})">${w.op}</b></div>
+    </div>`).join('');
+}
+
+/* ============ REGROUP (carry & borrow) ============ */
+const RGNM={ones:{en:'ones',fr:'unités'},tens:{en:'tens',fr:'dizaines'},hundreds:{en:'hundreds',fr:'centaines'},thousands:{en:'thousands',fr:'milliers'}};
+const RGSG={ones:{en:'one',fr:'unité'},tens:{en:'ten',fr:'dizaine'},hundreds:{en:'hundred',fr:'centaine'},thousands:{en:'thousand',fr:'millier'}};
+const nm=p=>RGNM[p][LANG],sg=p=>RGSG[p][LANG],cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const LOW=['ones','tens','hundreds','thousands'];const ORD=['thousands','hundreds','tens','ones'];
+function regroupCompute(a,b,op){
+  const da=digits(a),db=digits(b),total=op==='+'?a+b:a-b;
+  const placesLR=ORD.slice(4-String(op==='+'?a+b:a).length);const steps=[];const result={};
+  if(op==='+'){
+    let carry=0;const carryMarks={};const need=String(a+b).length;
+    LOW.slice(0,need).forEach((p,i)=>{
+      const s=da[p]+db[p]+carry,rd=s%10,co=Math.floor(s/10),next=LOW[i+1];
+      result[p]=rd;if(co&&next)carryMarks[next]=co;
+      const parts=`${da[p]} + ${db[p]}${carry?` + ${carry}`:''}`;
+      const text=co?L(`${cap(nm(p))}: ${parts} = ${s}. Too many for one spot — write ${rd}, carry 1 ${sg(next)}.`,`${cap(nm(p))} : ${parts} = ${s}. Trop pour une place — on écrit ${rd} et on retient 1 ${sg(next)}.`):L(`${cap(nm(p))}: ${parts} = ${rd}. It fits — write ${rd}.`,`${cap(nm(p))} : ${parts} = ${rd}. Ça rentre — on écrit ${rd}.`);
+      steps.push({result:{...result},carry:{...carryMarks},active:p,text,placesLR,da,db});carry=co;
+    });
+    if(String(a+b).length>String(Math.max(a,b)).length){const np=LOW[need-1];result[np]=digits(a+b)[np];steps.push({result:{...result},carry:{...carryMarks},active:np,text:L(`The carried 1 goes in the ${nm(np)} spot. Answer: ${a+b}.`,`Le 1 retenu va à la place des ${nm(np)}. Réponse : ${a+b}.`),placesLR,da,db});}
+    else steps.push({result:{...result},carry:{...carryMarks},active:null,text:L(`All done! ${a} + ${b} = ${a+b}.`,`Terminé ! ${a} + ${b} = ${a+b}.`),placesLR,da,db});
+  }else{
+    let borrow=0;const effTop={};const struck=new Set();const need=String(a).length;
+    LOW.slice(0,need).forEach((p,i)=>{
+      let t=da[p],reduced=false,aug=false;if(borrow){t-=1;reduced=true;}let bo=0;if(t<db[p]){t+=10;aug=true;bo=1;}
+      if(reduced||aug){struck.add(p);effTop[p]=t;}const r=t-db[p];result[p]=r;const higher=LOW[i+1];
+      const text=aug?L(`${cap(nm(p))}: borrow 1 ${sg(higher)} so it can do it → it becomes ${t}. ${t} − ${db[p]} = ${r}.`,`${cap(nm(p))} : on emprunte 1 ${sg(higher)} pour pouvoir calculer → ça devient ${t}. ${t} − ${db[p]} = ${r}.`):L(`${cap(nm(p))}: ${reduced?`${t} (after lending)`:da[p]} − ${db[p]} = ${r}.`,`${cap(nm(p))} : ${reduced?`${t} (après le prêt)`:da[p]} − ${db[p]} = ${r}.`);
+      const snapStruck=new Set(struck),snapEff={...effTop};if(bo&&higher){snapStruck.add(higher);snapEff[higher]=da[higher]-1;}
+      steps.push({result:{...result},struck:snapStruck,effTop:snapEff,active:p,text,placesLR,da,db});borrow=bo;
+    });
+    steps.push({result:{...result},struck:new Set(struck),effTop:{...effTop},active:null,text:L(`All done! ${a} − ${b} = ${a-b}.`,`Terminé ! ${a} − ${b} = ${a-b}.`),placesLR,da,db});
+  }
+  steps.forEach(s=>{s.aN=a;s.bN=b;});
+  return {steps,placesLR,da,db,answer:total};
+}
+function renderRegroup(s,op){
+  const pl=s.placesLR,aN=s.aN,bN=s.bN,W=46;const valOf=k=>PLACES.find(p=>p.key===k).val;
+  const showN=(n,p)=>(n>=valOf(p)||p==='ones')?digits(n)[p]:'';
+  const cell=(html,p,extra='')=>`<div class="cellbox ${p?('c-'+p):'empty'} ${extra}" style="width:${W}px;height:46px;font-size:24px">${html}</div>`;
+  const lab=p=>`<div class="plabel lab-${p}" style="width:${W}px">${PLACES.find(x=>x.key===p).short[LANG]}</div>`;
+  const ann=p=>{let txt=op==='+'?((s.carry&&s.carry[p])?s.carry[p]:''):((s.struck&&s.struck.has(p))?s.effTop[p]:'');return `<div style="width:${W}px;height:22px;display:flex;align-items:center;justify-content:center;font-family:Fredoka;font-weight:700;font-size:15px;color:${txt!==''?`var(--${p})`:'transparent'}">${txt}</div>`;};
+  const sign=w=>`<div style="width:22px;text-align:center;font-family:Fredoka;font-weight:700;font-size:22px;color:var(--soft)">${w}</div>`;
+  const row=(inner,lead)=>`<div style="display:flex;gap:8px;justify-content:flex-end;align-items:center;margin:2px 0">${lead}${inner}</div>`;
+  const head=`<div style="display:flex;gap:8px;justify-content:flex-end;padding-left:22px;margin-bottom:2px">${pl.map(lab).join('')}</div>`;
+  const annRow=`<div style="display:flex;gap:8px;justify-content:flex-end;padding-left:22px;align-items:flex-end">${pl.map(ann).join('')}</div>`;
+  const topRow=row(pl.map(p=>{let d=showN(aN,p);if(op==='-'&&s.struck&&s.struck.has(p)&&d!=='')d=`<s style="opacity:.45">${d}</s>`;return cell(d,d===''?null:p,s.active===p?'rg-active':'');}).join(''),sign(''));
+  const botRow=row(pl.map(p=>{const d=showN(bN,p);return cell(d,d===''?null:p);}).join(''),sign(op));
+  const divv=`<div style="border-top:3px solid var(--ink);margin:5px 2px 4px"></div>`;
+  const resRow=row(pl.map(p=>{const r=(s.result&&s.result[p]!=null)?s.result[p]:null;return r==null?cell('?',null,'qmark'):cell(r,p,s.active===p?'rg-active':'');}).join(''),sign(''));
+  return `<div style="display:inline-block">${head}${annRow}${topRow}${botRow}${divv}${resRow}</div>`;
+}
+function regroupExplainHTML(a,b,op){const R=regroupCompute(a,b,op);return `<div style="text-align:center;margin-bottom:10px">${renderRegroup(R.steps[R.steps.length-1],op)}</div><p style="text-align:left">${R.steps.map(s=>s.text).join('<br>')}</p>`;}
+function genCarry(){let a,b,g=0;do{a=15+rand(385);b=15+rand(385);g++;}while(g<60&&!((a%10+b%10>=10)||((Math.floor(a/10)%10)+(Math.floor(b/10)%10)>=10)));return{a,b};}
+function genBorrow(){let a,b,g=0;do{a=32+rand(867);b=12+rand(a-20);g++;}while(g<80&&!(a>b&&((a%10<b%10)||((Math.floor(a/10)%10)<(Math.floor(b/10)%10)))));if(b>=a)b=Math.max(1,a-3);return{a,b};}
+let rgEx={a:159,b:162,op:'+'},rgStep=0,rgData=null;
+function exchangeHTML(){
+  const arrow=`<div style="font-size:28px;color:var(--soft)">→</div>`;
+  const r1=Array(10).fill(0).map(()=>bUnit('var(--ones)')).join('');const r2=Array(10).fill(0).map(()=>bRod('var(--tens)')).join('');
+  return `<div style="display:flex;flex-wrap:wrap;gap:34px;justify-content:center;align-items:center">
+    <div style="display:flex;gap:14px;align-items:center"><div style="text-align:center"><div class="bset">${r1}</div><div class="ttnote" style="color:var(--ones)">10 ${WORD.ones[LANG][1]}</div></div>${arrow}<div style="text-align:center"><div class="bset">${bRod('var(--tens)')}</div><div class="ttnote" style="color:var(--tens)">1 ${WORD.tens[LANG][0]}</div></div></div>
+    <div style="display:flex;gap:14px;align-items:center"><div style="text-align:center"><div class="bset" style="max-width:210px">${r2}</div><div class="ttnote" style="color:var(--tens)">10 ${WORD.tens[LANG][1]}</div></div>${arrow}<div style="text-align:center"><div class="bset">${bFlat('var(--hundreds)')}</div><div class="ttnote" style="color:var(--hundreds)">1 ${WORD.hundreds[LANG][0]}</div></div></div>
+  </div>`;
+}
+function buildRegroup(){document.getElementById('rgIntro').innerHTML=exchangeHTML();rgData=regroupCompute(rgEx.a,rgEx.b,rgEx.op);if(rgStep>rgData.steps.length-1)rgStep=0;rgRender();}
+function rgRender(){const s=rgData.steps[rgStep];document.getElementById('rgDiagram').innerHTML=renderRegroup(s,rgEx.op);document.getElementById('rgText').innerHTML=s.text;document.getElementById('rgCount').textContent=`${STR.rgStep[LANG]} ${rgStep+1}/${rgData.steps.length}`;}
+function rgGo(d){rgStep=Math.max(0,Math.min(rgData.steps.length-1,rgStep+d));rgRender();}
+function rgPick(op){rgEx=op==='+'?{a:159,b:162,op:'+'}:{a:234,b:147,op:'-'};rgStep=0;rgData=regroupCompute(rgEx.a,rgEx.b,op);rgRender();}
+function rgAnother(){const op=rgEx.op;const g=op==='+'?genCarry():genBorrow();rgEx={a:g.a,b:g.b,op};rgStep=0;rgData=regroupCompute(g.a,g.b,op);rgRender();}
+
+/* PRACTICE */
+const TOPICS=[
+  {id:'pv',lab:{en:'🔎 Find the place',fr:'🔎 Trouve la place'},cls:'t-pv',on:true},
+  {id:'add',lab:{en:'➕ Snap together',fr:'➕ Assemble'},cls:'t-add',on:true},
+  {id:'sub',lab:{en:'➖ Take apart',fr:'➖ Sépare'},cls:'t-sub',on:true},
+  {id:'roll',lab:{en:'🔄 Roll over',fr:'🔄 Bascule'},cls:'t-roll',on:true},
+  {id:'times',lab:{en:'✖️ Times tables',fr:'✖️ Les tables'},cls:'t-times',on:true},
+  {id:'frac',lab:{en:'🍕 Fractions',fr:'🍕 Fractions'},cls:'t-frac',on:false},
+  {id:'words',lab:{en:'🔤 Word signs',fr:'🔤 Mots & signes'},cls:'t-words',on:false},
+  {id:'carry',lab:{en:'➕ Add (carry)',fr:'➕ Addition (retenue)'},cls:'t-carry',on:true},
+  {id:'borrow',lab:{en:'➖ Subtract (borrow)',fr:'➖ Soustraction (emprunt)'},cls:'t-borrow',on:true},
+];
+let score=0,asked=0,current=null,soundOn=true;
+let quizLen=10,quizCount=0,quizState='setup';
+const COUNTS=[5,10,15,20];
+function buildTopics(){document.getElementById('topicRow').innerHTML=TOPICS.map(t=>`<button class="topic ${t.cls}" aria-pressed="${t.on}" onclick="toggleTopic('${t.id}',this)">${t.lab[LANG]}</button>`).join('');}
+function buildCounts(){document.getElementById('countRow').innerHTML=COUNTS.map(n=>`<button class="topic t-count" aria-pressed="${n===quizLen}" onclick="setCount(${n},this)">${n}</button>`).join('');}
+function setCount(n,el){quizLen=n;document.querySelectorAll('#countRow .topic').forEach(b=>b.setAttribute('aria-pressed','false'));el.setAttribute('aria-pressed','true');}
+function toggleTopic(id,el){const t=TOPICS.find(x=>x.id===id);if(t.on&&TOPICS.filter(x=>x.on).length===1)return;t.on=!t.on;el.setAttribute('aria-pressed',t.on);}
+function makeChoices(ans,extra=[]){const set=new Set([ans,...extra.filter(x=>x>=0)]);let g=0;while(set.size<4&&g<80){g++;const r=rand(4);let c;if(r===0)c=ans+pick([1,-1,10,-10,100]);else if(r===1)c=ans+pick([2,-2,20,-20]);else if(r===2)c=Math.max(0,ans+pick([3,-3,9,11]));else c=ans+pick([100,-100,1]);if(c>=0&&c!==ans)set.add(c);}return shuffle([...set].slice(0,4));}
+const GEN={
+  pv(){const n=pick([47,68,352,605,1297,2568,830,409,756,2030]);const d=digits(n);const p=pick(PLACES.filter(x=>n>=x.val));return{ask:L(`In ${n}, what number is in the ${p.name.en.toLowerCase()} spot?`,`Dans ${n}, quel chiffre est à la place des ${p.name.fr.toLowerCase()} ?`),bigHTML:frameHTML(n,4),answer:d[p.key],choices:makeChoices(d[p.key],[(d[p.key]+1)%10,(d[p.key]+2)%10]),explainHTML:`${expandHTML(n)}<p><b style="color:var(--${p.key})">${L(p.name.en+' spot',p.name.fr.toLowerCase())}</b> ${L('holds','contient')} <b style="color:var(--${p.key})">${d[p.key]}</b>.</p>`};},
+  add(){const k=pick(['to','th','big']);let a,b;if(k==='to'){a=pick([10,20,30,40,50,60,70,80,90]);b=1+rand(9);}else if(k==='th'){a=pick([100,200,300,400,500,600,700,800,900]);b=pick([10,20,30,40,50,60,70,80,90]);}else{a=pick([100,1000]);b=a===100?(11+rand(80)):(101+rand(896));}const ans=a+b,need=ans>=1000?4:ans>=100?3:2;return{ask:L('Snap them together:','Assemble-les :'),bigHTML:stackedSum(a,b,need,true),answer:ans,choices:makeChoices(ans,[a,b]),explainHTML:`<p><b style="color:var(--tens)">${a}</b> ${L('and','et')} <b style="color:var(--ones)">${b}</b> ${L('slide together →','se glissent ensemble →')} <b>${ans}</b>.</p>${stackedSum(a,b,need,false)}`};},
+  sub(){const a=pick([43,67,85,29,352,605,148,270,536,90]);const d=digits(a);const opts=[];if(d.ones>0)opts.push({take:d.ones,why:'ones'});if(d.tens>0)opts.push({take:d.tens*10,why:'tens'});if(d.hundreds>0)opts.push({take:d.hundreds*100,why:'hundreds'});const o=pick(opts);const ans=a-o.take,need=a>=100?3:2;return{ask:L(`Take away the ${pword(o.why,2)}:`,`Enlève les ${pword(o.why,2)} :`),bigHTML:stackedDiff(a,o.take,need,true),answer:ans,choices:makeChoices(ans,[o.take,a]),explainHTML:`<p>${L('Take off','Enlève')} <b style="color:var(--${o.why})">${o.take}</b> → <b>${ans}</b>.</p>${stackedDiff(a,o.take,need,false)}`};},
+  roll(){const base=pick([9,19,29,39,49,59,69,79,89,99,199,299,399]);const ans=base+1;return{ask:L('Roll over! What comes after?','Ça bascule ! Quel nombre vient après ?'),bigHTML:stackedSum(base,1,ans>=100?3:2,true),answer:ans,choices:makeChoices(ans,[base,base+10]),explainHTML:`<p>${L('The 9s are full, so they roll over to a new','Les 9 sont pleins, alors ça bascule vers un nouveau')} <b style="color:var(--${ans>=100?'hundreds':'tens'})">${ans}</b>.</p>`};},
+  times(){let a,b;if(rand(6)===0){a=pick([0,1]);b=2+rand(11);if(rand(2))[a,b]=[b,a];}else{a=2+rand(11);b=2+rand(11);}const ans=a*b;let exp;if(a===0||b===0)exp=L('Anything × 0 = 0.','Tout nombre × 0 = 0.');else if(a===1||b===1)exp=L('× 1 keeps the number the same.','× 1 garde le nombre pareil.');else exp=`${a} ${L('groups of','groupes de')} ${b}:<div style="margin-top:8px">${dotArray(a,b)}</div>`;return{ask:'',bigHTML:`<span class="bigeq">${a} × ${b} = <span style="color:var(--thousands)">?</span></span>`,answer:ans,choices:makeChoices(ans,[a+b,a*b+a,Math.max(0,a*b-b)]),explainHTML:`<p>${a} × ${b} = <b>${ans}</b>. ${exp}</p>`};},
+  frac(){const f=pick(FRACTIONS);if(rand(2)){const opts=new Set([`${f.num}/${f.den}`]);while(opts.size<4){const g=pick(FRACTIONS);opts.add(`${g.num}/${g.den}`);}return{ask:STR.whichFrac[LANG],bigHTML:pieSVG(f.num,f.den,150),answer:`${f.num}/${f.den}`,choices:shuffle([...opts]),explainHTML:`<p>${f.num} ${L('out of','sur')} ${f.den} ${L('pieces coloured →','morceaux coloriés →')} <b style="color:var(--frac)">${f.num}/${f.den}</b> = ${f.word[LANG]}.</p>`};}else{const opts=new Set([f.word[LANG]]);while(opts.size<4){opts.add(pick(FRACTIONS).word[LANG]);}return{ask:STR.whichWord[LANG],bigHTML:`${pieSVG(f.num,f.den,140)}<span class="bigeq" style="color:var(--frac)">${f.num}/${f.den}</span>`,answer:f.word[LANG],choices:shuffle([...opts]),explainHTML:`<p>${f.num}/${f.den} = <b style="color:var(--frac)">${f.word[LANG]}</b>.</p>`};}},
+  words(){const w=pick(WORDS);const word=pick(w.words[LANG]);return{ask:STR.whichSign[LANG],bigHTML:`<span class="bigeq" style="font-size:30px">“${word}”</span>`,answer:w.op,choices:shuffle(['+','−','×','÷']),explainHTML:`<p>“${word}” ${L('means','veut dire')} <b style="color:var(--${w.color})">${w.op}</b>. ${w.ex[LANG]} → <b>${w.op}</b></p>`};},
+  carry(){const {a,b}=genCarry();const ans=a+b,need=String(ans).length;return{ask:L('Add them — careful, you may need to carry!','Additionne — attention, il y a peut-être une retenue !'),bigHTML:stackedSum(a,b,need,true),answer:ans,choices:makeChoices(ans,[a,b,Math.abs(a-b)]),explainHTML:regroupExplainHTML(a,b,'+')};},
+  borrow(){const {a,b}=genBorrow();const ans=a-b,need=String(a).length;return{ask:L('Subtract them — you may need to borrow!','Soustrais — tu devras peut-être emprunter !'),bigHTML:stackedDiff(a,b,need,true),answer:ans,choices:makeChoices(ans,[b,a,a-b+10]),explainHTML:regroupExplainHTML(a,b,'-')};}
+};
+function serveQuestion(){const live=TOPICS.filter(t=>t.on);current=GEN[pick(live).id]();document.getElementById('qAsk').textContent=current.ask;document.getElementById('qAsk').style.display=current.ask?'block':'none';document.getElementById('qBig').innerHTML=current.bigHTML;document.getElementById('qChoices').innerHTML=current.choices.map((c,i)=>`<button class="choice" onclick="answer(this,${i})">${c}</button>`).join('');document.getElementById('qFeedback').textContent='';document.getElementById('qFeedback').className='feedback';document.getElementById('qExplain').className='explain hidden';document.getElementById('nextBtn').className='next hidden';document.getElementById('progText').textContent=`${STR.qProgress[LANG]} ${quizCount+1} / ${quizLen}`;updateScore();}
+function nextQuestion(){if(quizCount>=quizLen-1){finishQuiz();}else{quizCount++;serveQuestion();}}
+function startQuiz(){score=0;asked=0;quizCount=0;quizState='playing';document.getElementById('quizSetup').classList.add('hidden');document.getElementById('quizDone').classList.add('hidden');document.getElementById('quizPlay').classList.remove('hidden');serveQuestion();}
+function finishQuiz(){quizState='done';document.getElementById('quizPlay').classList.add('hidden');document.getElementById('quizDone').classList.remove('hidden');const pct=asked?score/asked:0;const msg=pct>=1?STR.msgPerfect[LANG]:pct>=0.8?STR.msgGreat[LANG]:pct>=0.5?STR.msgGood[LANG]:STR.msgTry[LANG];document.getElementById('doneBody').innerHTML=`<div class="bigeq" style="margin:6px 0">${score} / ${quizLen}</div><div class="stars" style="font-size:30px">${'⭐'.repeat(Math.min(5,Math.round(pct*5)))}</div><p class="fred" style="font-size:20px;font-weight:600;margin-top:10px">${msg}</p>`;}
+function backToSetup(){quizState='setup';document.getElementById('quizPlay').classList.add('hidden');document.getElementById('quizDone').classList.add('hidden');document.getElementById('quizSetup').classList.remove('hidden');}
+function answer(el,idx){const btns=[...document.querySelectorAll('.choice')];btns.forEach(b=>b.disabled=true);const correct=String(current.choices[idx])===String(current.answer);const fb=document.getElementById('qFeedback');asked++;if(correct){el.classList.add('right');score++;fb.textContent=STR.fbOk[LANG];fb.className='feedback ok';beep(true);}else{el.classList.add('wrong');btns.forEach((b,k)=>{if(String(current.choices[k])===String(current.answer))b.classList.add('right');});fb.textContent=STR.fbNo[LANG];fb.className='feedback no';beep(false);}const ex=document.getElementById('qExplain');ex.innerHTML=current.explainHTML;ex.className='explain';const nb=document.getElementById('nextBtn');nb.textContent=(quizCount>=quizLen-1)?STR.seeResults[LANG]:STR.next[LANG];nb.className='next';updateScore();}
+function updateScore(){document.getElementById('starRow').textContent='⭐'.repeat(Math.min(5,Math.floor(score/3)));}
+
+/* PRINT / SELECTION */
+let selset=new Set();
+function ensureCtl(card){
+  if(!card.id||!card.classList.contains('printable'))return;
+  let ctl=card.querySelector(':scope > .cardctl');
+  if(!ctl){ctl=document.createElement('div');ctl.className='cardctl no-print';ctl.innerHTML=`<input type="checkbox" onchange="toggleSel('${card.id}',this)"><button class="pbtn" onclick="printOne('${card.id}')">🖨️</button>`;card.insertBefore(ctl,card.firstChild);}
+  const cb=ctl.querySelector('input');cb.checked=selset.has(card.id);cb.title=STR.inc[LANG];
+  ctl.querySelector('.pbtn').title=STR.printThis[LANG];
+}
+function addPrintControls(){document.querySelectorAll('.card.printable').forEach(ensureCtl);}
+function toggleSel(id,cb){if(cb.checked)selset.add(id);else selset.delete(id);updateSelBtn();}
+function updateSelBtn(){const n=selset.size,b=document.getElementById('printSelBtn');b.textContent=STR.printSel[LANG]+(n?` (${n})`:'');b.style.display=n?'inline-block':'none';}
+function doPrint(ids){document.querySelectorAll('.card.print-on').forEach(c=>c.classList.remove('print-on'));ids.forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('print-on');});document.body.classList.add('printsel');const clean=()=>{document.body.classList.remove('printsel');document.querySelectorAll('.print-on').forEach(c=>c.classList.remove('print-on'));window.removeEventListener('afterprint',clean);};window.addEventListener('afterprint',clean);window.print();setTimeout(clean,1200);}
+function printOne(id){doPrint([id]);}
+function printSelected(){if(selset.size===0)return;doPrint([...selset]);}
+function printPage(){window.print();}
+
+/* SOUND */
+let actx=null;
+function beep(good){if(!soundOn)return;try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();(good?[523,784]:[330,247]).forEach((f,i)=>{const o=actx.createOscillator(),g=actx.createGain();o.type='sine';o.frequency.value=f;o.connect(g);g.connect(actx.destination);const t=actx.currentTime+i*0.12;g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.18,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+0.16);o.start(t);o.stop(t+0.18);});}catch(e){}}
+function toggleSound(){soundOn=!soundOn;document.getElementById('soundBtn').textContent=soundOn?STR.soundOn[LANG]:STR.soundOff[LANG];}
+
+/* TABS + LANG */
+function showTab(id,el){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('show'));document.getElementById(id).classList.add('show');document.querySelectorAll('.tab[role=tab]').forEach(t=>t.setAttribute('aria-selected','false'));el.setAttribute('aria-selected','true');}
+function applyLang(){
+  document.documentElement.lang=LANG;
+  document.querySelectorAll('[data-i]').forEach(el=>{const k=el.getAttribute('data-i');if(STR[k])el.innerHTML=STR[k][LANG];});
+  document.getElementById('langBtn').textContent=STR.langBtn[LANG];
+  document.getElementById('printBtn').textContent=STR.printPage[LANG];
+  document.getElementById('soundBtn').textContent=soundOn?STR.soundOn[LANG]:STR.soundOff[LANG];
+  document.getElementById('nextBtn').textContent=quizState==='playing'&&quizCount>=quizLen-1?STR.seeResults[LANG]:STR.next[LANG];
+  document.getElementById('startBtn').textContent=STR.startBtn[LANG];
+  document.getElementById('againBtn').textContent=STR.again[LANG];
+  document.getElementById('changeBtn').textContent=STR.change[LANG];
+  document.getElementById('quitBtn').textContent=STR.change[LANG];
+  buildHome();buildChart();buildNumbers();buildTimes();buildFractions();buildWords();buildRegroup();buildTopics();buildCounts();updateScore();
+  addPrintControls();updateSelBtn();
+}
+function toggleLang(){LANG=LANG==='fr'?'en':'fr';applyLang();}
+applyLang();
+</script>
+</body>
+</html>
