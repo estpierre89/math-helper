@@ -95,6 +95,17 @@
   .ttgrid td{padding:0;border:none;background:transparent;}
   .gcell{width:44px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;}
   .gnum{background:#fff;color:var(--ink);font-weight:700;font-size:15px;min-width:26px;height:23px;border-radius:7px;display:flex;align-items:center;justify-content:center;padding:0 4px;box-shadow:0 0 0 1px rgba(0,0,0,.12);}
+  .stepper{display:inline-flex;align-items:center;gap:10px;margin-top:4px;}
+  .stepper span{font-size:26px;font-weight:600;min-width:30px;text-align:center;}
+  .atokgrid{display:inline-grid;gap:6px;}
+  .atok{width:22px;height:22px;border-radius:50%;background:var(--thousands);}
+  .ddslotgrid{display:inline-grid;gap:6px;}
+  .dropslot{width:32px;height:32px;border:2px dashed var(--line);border-radius:8px;background:#fffdf7;display:flex;align-items:center;justify-content:center;}
+  .dropslot.filled{border-style:solid;border-color:var(--thousands);background:#fff;}
+  .ptok{width:20px;height:20px;border-radius:50%;background:var(--thousands);}
+  .ddpilewrap{display:flex;flex-wrap:wrap;gap:8px;max-width:300px;justify-content:center;align-content:flex-start;}
+  .dragtok{width:30px;height:30px;border-radius:50%;background:var(--thousands);cursor:grab;touch-action:none;box-shadow:var(--shadow);}
+  .dragtok.used{opacity:.22;cursor:default;box-shadow:none;}
   .dots{display:inline-grid;gap:5px;justify-content:center;}
   .dot{width:15px;height:15px;border-radius:50%;background:var(--thousands);}
   .fracwrap{display:flex;flex-wrap:wrap;gap:30px;align-items:center;justify-content:center;}
@@ -227,6 +238,11 @@
       <p class="lead" data-i="chartL4"></p>
       <div id="breakExamples"></div>
     </div>
+    <div class="card printable" id="card-addgrid">
+      <h2 data-i="addGridT"></h2>
+      <p class="lead" data-i="addGridL"></p>
+      <div class="chartwrap"><div id="addGrid" style="display:flex;justify-content:center"></div></div>
+    </div>
   </section>
 
   <!-- NUMBERS -->
@@ -257,6 +273,30 @@
       <h2 data-i="gridT">The whole grid (learn by heart)</h2>
       <p class="lead" data-i="gridL"></p>
       <div class="chartwrap"><div id="timesGrid" style="display:flex;justify-content:center"></div></div>
+    </div>
+    <div class="card" id="card-array">
+      <h2 data-i="arrT"></h2>
+      <p class="lead" data-i="arrL"></p>
+      <div class="no-print" style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-bottom:14px">
+        <div style="text-align:center"><div class="ttnote" data-i="arrRows"></div><div class="stepper"><button class="tbtn" onclick="arrStep('r',-1)">−</button><span id="arrRowsVal" class="fred"></span><button class="tbtn" onclick="arrStep('r',1)">+</button></div></div>
+        <div style="text-align:center"><div class="ttnote" data-i="arrCols"></div><div class="stepper"><button class="tbtn" onclick="arrStep('c',-1)">−</button><span id="arrColsVal" class="fred"></span><button class="tbtn" onclick="arrStep('c',1)">+</button></div></div>
+      </div>
+      <div id="arrayGrid" style="display:flex;justify-content:center;margin:10px 0"></div>
+      <div id="arrayEq" class="fred" style="text-align:center;font-size:22px;font-weight:600"></div>
+    </div>
+    <div class="card no-print" id="card-build">
+      <h2 data-i="ddT"></h2>
+      <p class="lead" data-i="ddL"></p>
+      <div id="ddTarget" class="fred" style="text-align:center;font-size:22px;font-weight:600;margin-bottom:12px"></div>
+      <div style="display:flex;gap:26px;justify-content:center;flex-wrap:wrap;align-items:flex-start">
+        <div id="ddGrid"></div>
+        <div class="ddpilewrap" id="ddPile"></div>
+      </div>
+      <div id="ddFeedback" class="feedback" style="text-align:center"></div>
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:10px">
+        <button class="tbtn" id="ddNewBtn" onclick="newDD()"></button>
+        <button class="tbtn" id="ddClearBtn" onclick="clearDD()"></button>
+      </div>
     </div>
   </section>
 
@@ -382,6 +422,16 @@ const STR={
   timesL:{en:"Tap a number to see its table. Tap 0 or 1 for the special rules.",fr:"Touche un nombre pour voir sa table. Touche 0 ou 1 pour les règles spéciales."},
   gridT:{en:"The whole grid (learn by heart)",fr:"La grille complète (à apprendre par cœur)"},
   gridL:{en:"Find the row and the column — the answer is where they meet. Each answer's left half wears its row colour, its right half the column colour.",fr:"Trouve la ligne et la colonne — la réponse est à leur croisement. La moitié gauche de la réponse a la couleur de sa ligne, la moitié droite celle de sa colonne."},
+  arrT:{en:"See it as rows and columns",fr:"Vois-le en rangées et colonnes"},
+  arrL:{en:"Multiplication is just rows of equal groups. Change the rows and columns and watch the array.",fr:"La multiplication, ce sont des rangées de groupes égaux. Change les rangées et les colonnes et regarde le tableau."},
+  arrRows:{en:"Rows",fr:"Rangées"},arrCols:{en:"Columns",fr:"Colonnes"},
+  rowsOf:{en:"rows of",fr:"rangées de"},
+  ddT:{en:"Build the array (drag &amp; drop)",fr:"Construis le tableau (glisser-déposer)"},
+  ddL:{en:"Drag the tokens into the grid to fill every row. Then read off the multiplication!",fr:"Glisse les jetons dans la grille pour remplir chaque rangée. Puis lis la multiplication !"},
+  ddNew:{en:"🔁 New array",fr:"🔁 Nouveau tableau"},ddClear:{en:"↺ Clear",fr:"↺ Effacer"},
+  ddBuild:{en:"Build",fr:"Construis"},
+  addGridT:{en:"Addition grid (learn by heart)",fr:"Grille d'addition (à apprendre par cœur)"},
+  addGridL:{en:"Find the row and the column — the sum is where they meet. Same colours as the multiplication grid.",fr:"Trouve la ligne et la colonne — la somme est à leur croisement. Mêmes couleurs que la grille de multiplication."},
   hideShow:{en:"🙈 Hide answers",fr:"🙈 Cacher les réponses"},showAns:{en:"👀 Show answers",fr:"👀 Montrer les réponses"},
   fracT:{en:"Fractions 🍕",fr:"Les fractions 🍕"},
   fracL:{en:"Tap a fraction. The pie shows how much of the whole it is.",fr:"Touche une fraction. La tarte montre quelle part du tout c'est."},
@@ -415,7 +465,7 @@ const STR={
 };
 
 /* palette for 0..12 */
-const PAL=['#6b7280','#e11d48','#16a34a','#7c3aed','#f97316','#0d9488','#db2777','#2563eb','#ca8a04','#4f46e5','#b45309','#0891b2','#c026d3'];
+const PAL=['#6b7280','#e11d48','#16a34a','#7c3aed','#f97316','#1f2937','#4d7c0f','#2563eb','#ca8a04','#0d9488','#b45309','#0891b2','#c026d3'];
 
 const PLACES=[
   {key:'thousands',short:{en:'Th',fr:'M'},name:{en:'Thousands',fr:'Milliers'},val:1000},
@@ -519,6 +569,61 @@ function buildTimesGrid(){
   for(let c=0;c<=12;c++)t+=`<th style="color:${PAL[c]}">${c}</th>`;t+='</tr>';
   for(let r=0;r<=12;r++){t+=`<tr><th style="color:${PAL[r]}">${r}</th>`;for(let c=0;c<=12;c++){t+=`<td><div class="gcell" style="background:linear-gradient(to right,${PAL[r]} 0 50%,${PAL[c]} 50% 100%)"><span class="gnum">${r*c}</span></div></td>`;}t+='</tr>';}
   document.getElementById('timesGrid').innerHTML=t+'</table>';
+}
+function buildAddGrid(){
+  let t='<table class="ttgrid"><tr><th class="corner">+</th>';
+  for(let c=0;c<=12;c++)t+=`<th style="color:${PAL[c]}">${c}</th>`;t+='</tr>';
+  for(let r=0;r<=12;r++){t+=`<tr><th style="color:${PAL[r]}">${r}</th>`;for(let c=0;c<=12;c++){t+=`<td><div class="gcell" style="background:linear-gradient(to right,${PAL[r]} 0 50%,${PAL[c]} 50% 100%)"><span class="gnum">${r+c}</span></div></td>`;}t+='</tr>';}
+  document.getElementById('addGrid').innerHTML=t+'</table>';
+}
+
+/* array viewer */
+let arrRows=3,arrCols=4;
+function arrStep(which,d){if(which==='r')arrRows=Math.max(1,Math.min(12,arrRows+d));else arrCols=Math.max(1,Math.min(12,arrCols+d));renderArrayViewer();}
+function buildArrayViewer(){renderArrayViewer();}
+function renderArrayViewer(){
+  const tokens=Array(arrRows*arrCols).fill(0).map(()=>'<div class="atok"></div>').join('');
+  document.getElementById('arrayGrid').innerHTML=`<div class="atokgrid" style="grid-template-columns:repeat(${arrCols},1fr)">${tokens}</div>`;
+  document.getElementById('arrayEq').innerHTML=`${arrRows} ${L('rows of','rangées de')} ${arrCols} &nbsp;→&nbsp; <span style="color:var(--thousands)">${arrRows} × ${arrCols} = ${arrRows*arrCols}</span>`;
+  document.getElementById('arrRowsVal').textContent=arrRows;
+  document.getElementById('arrColsVal').textContent=arrCols;
+}
+
+/* drag & drop build-the-array */
+let ddR=3,ddC=4,ddPlaced=0;
+function newDD(){ddR=2+rand(4);ddC=2+rand(4);clearDD();}
+function clearDD(){ddPlaced=0;renderDD();}
+function buildDD(){renderDD();}
+function renderDD(){
+  document.getElementById('ddTarget').innerHTML=`${STR.ddBuild[LANG]} <span style="color:var(--thousands)">${ddR} ${L('rows of','rangées de')} ${ddC}</span>`;
+  let slots='';for(let i=0;i<ddR*ddC;i++)slots+='<div class="dropslot"></div>';
+  document.getElementById('ddGrid').innerHTML=`<div class="ddslotgrid" style="grid-template-columns:repeat(${ddC},1fr)">${slots}</div>`;
+  let pile='';for(let i=0;i<ddR*ddC;i++)pile+='<div class="dragtok" onpointerdown="startDrag(event,this)"></div>';
+  document.getElementById('ddPile').innerHTML=pile;
+  const fb=document.getElementById('ddFeedback');fb.textContent='';fb.className='feedback';
+  document.getElementById('ddNewBtn').textContent=STR.ddNew[LANG];
+  document.getElementById('ddClearBtn').textContent=STR.ddClear[LANG];
+}
+function checkArrayDone(){ddPlaced++;if(ddPlaced>=ddR*ddC){const fb=document.getElementById('ddFeedback');fb.innerHTML=`⭐ ${ddR} × ${ddC} = <b>${ddR*ddC}</b> !`;fb.className='feedback ok';beep(true);}}
+let dragClone=null,dragSrc=null;
+function moveClone(e){if(dragClone){dragClone.style.left=(e.clientX-dragClone.offsetWidth/2)+'px';dragClone.style.top=(e.clientY-dragClone.offsetHeight/2)+'px';}}
+function onDragMove(e){moveClone(e);}
+function onDragUp(e){
+  const el=document.elementFromPoint(e.clientX,e.clientY);
+  const slot=el&&el.closest?el.closest('.dropslot'):null;
+  if(slot&&!slot.classList.contains('filled')&&dragSrc&&!dragSrc.classList.contains('used')){
+    slot.classList.add('filled');slot.innerHTML='<div class="ptok"></div>';dragSrc.classList.add('used');checkArrayDone();
+  }
+  cleanupDrag();
+}
+function cleanupDrag(){if(dragClone){dragClone.remove();dragClone=null;}if(dragSrc){dragSrc.removeEventListener('pointermove',onDragMove);dragSrc.removeEventListener('pointerup',onDragUp);dragSrc.removeEventListener('pointercancel',onDragUp);dragSrc=null;}}
+function startDrag(e,tok){
+  if(tok.classList.contains('used'))return;e.preventDefault();dragSrc=tok;
+  dragClone=tok.cloneNode(true);dragClone.classList.remove('used');
+  Object.assign(dragClone.style,{position:'fixed',pointerEvents:'none',zIndex:9999,opacity:'0.9',width:tok.offsetWidth+'px',height:tok.offsetHeight+'px',cursor:'grabbing'});
+  document.body.appendChild(dragClone);moveClone(e);
+  try{tok.setPointerCapture(e.pointerId);}catch(_){}
+  tok.addEventListener('pointermove',onDragMove);tok.addEventListener('pointerup',onDragUp);tok.addEventListener('pointercancel',onDragUp);
 }
 
 /* FRACTIONS */
@@ -706,7 +811,7 @@ function applyLang(){
   document.getElementById('againBtn').textContent=STR.again[LANG];
   document.getElementById('changeBtn').textContent=STR.change[LANG];
   document.getElementById('quitBtn').textContent=STR.change[LANG];
-  buildHome();buildChart();buildNumbers();buildTimes();buildFractions();buildWords();buildRegroup();buildTopics();buildCounts();updateScore();
+  buildHome();buildChart();buildAddGrid();buildNumbers();buildTimes();buildArrayViewer();buildDD();buildFractions();buildWords();buildRegroup();buildTopics();buildCounts();updateScore();
   addPrintControls();updateSelBtn();
 }
 function toggleLang(){LANG=LANG==='fr'?'en':'fr';applyLang();}
