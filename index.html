@@ -99,6 +99,10 @@
   #wordsContainer{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;}
   #wordsContainer .card{margin-bottom:0;padding:16px;}
   .guidegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;}
+  .guidecat{margin-bottom:22px;}
+  .guidecat:last-child{margin-bottom:0;}
+  .guidecat-h{font-family:'Fredoka';font-weight:600;font-size:14px;color:var(--soft);margin:0 0 10px;display:flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:1px;}
+  .guidecat-h .ic{font-size:19px;}
   .guidetile{border:3px solid var(--line);border-radius:18px;padding:16px;background:#fff;cursor:pointer;transition:transform .15s ease,box-shadow .2s ease,border-color .2s ease;box-shadow:var(--shadow);text-align:left;display:flex;flex-direction:column;gap:6px;}
   .guidetile:hover{transform:translateY(-3px);box-shadow:0 10px 0 rgba(0,0,0,.05),0 18px 36px rgba(120,90,40,.16);}
   .guidetile:active{transform:translateY(0);}
@@ -264,10 +268,50 @@
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important;}
   }
+  /* ===== PRACTICE: mode switch, categorized chooser, worksheet ===== */
+  .seg{display:inline-flex;background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:4px;gap:4px;}
+  .seg-btn{font-family:'Fredoka';font-weight:600;font-size:15px;border:none;background:none;color:var(--soft);border-radius:999px;padding:8px 18px;cursor:pointer;transition:background .2s ease,color .2s ease;}
+  .seg-btn[aria-pressed="true"]{background:var(--thousands);color:#fff;}
+  .pcat{border:2px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden;}
+  .pcat-head{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--surface);border:none;padding:12px 14px;cursor:pointer;font-family:'Fredoka';font-weight:600;font-size:16px;color:var(--ink);}
+  .pcat-l{display:flex;align-items:center;gap:8px;}
+  .pcat-l .ic{font-size:19px;}
+  .pcat-r{display:flex;align-items:center;gap:8px;}
+  .pcat-badge{font-size:13px;color:#fff;background:var(--thousands);border-radius:999px;padding:2px 9px;font-weight:700;min-width:18px;text-align:center;}
+  .pcat-badge.zero{background:var(--line);color:var(--soft);}
+  .pcat-head .chev{transition:transform .25s ease;color:var(--soft);}
+  .pcat.open .chev{transform:rotate(90deg);}
+  .pcat-body{display:none;padding:12px 14px;border-top:2px solid var(--line);}
+  .pcat.open .pcat-body{display:block;}
+  .pcat-tools{display:flex;gap:8px;margin-bottom:10px;}
+  .pcat-tools button{font-family:'Fredoka';font-size:13px;border:2px solid var(--line);background:#fff;border-radius:999px;padding:4px 12px;cursor:pointer;font-weight:600;color:var(--soft);}
+  .pcat-tools button:hover{border-color:var(--soft);}
+  .wslist{display:flex;flex-direction:column;gap:6px;}
+  .wsrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 10px;border:2px solid var(--line);border-radius:10px;background:#fff;transition:border-color .2s ease,background .2s ease;}
+  .wsrow.on{border-color:var(--thousands);background:var(--thousands-bg);}
+  .wslab{font-family:'Fredoka';font-weight:600;font-size:15px;}
+  .wsstep{display:flex;align-items:center;gap:8px;}
+  .wsstep button{width:30px;height:30px;border:2px solid var(--line);background:var(--surface);border-radius:8px;font-size:18px;font-family:'Fredoka';font-weight:700;cursor:pointer;line-height:1;}
+  .wsstep b{min-width:20px;text-align:center;font-family:'Fredoka';font-size:17px;}
+  .wsopt{display:flex;align-items:center;gap:8px;justify-content:center;font-family:'Fredoka';font-weight:600;font-size:16px;cursor:pointer;}
+  .qselect{font-family:'Fredoka';font-weight:600;font-size:18px;border:3px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:10px 18px;cursor:pointer;}
+  .ws-head{text-align:center;margin-bottom:16px;}
+  .ws-head h2{margin:0 0 6px;}
+  .ws-meta{font-family:'Fredoka';font-weight:600;color:var(--soft);font-size:14px;}
+  .ws-list{list-style:none;counter-reset:wsq;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .ws-q{counter-increment:wsq;border:2px solid var(--line);border-radius:12px;padding:12px;break-inside:avoid;}
+  .ws-q::before{content:counter(wsq) ".";font-family:'Fredoka';font-weight:700;color:var(--thousands);margin-right:6px;}
+  .ws-ask{font-family:'Fredoka';font-weight:600;font-size:15px;display:inline;}
+  .ws-big{margin:8px 0;}
+  .ws-ans{font-family:'Fredoka';color:var(--soft);font-weight:600;font-size:14px;margin-top:8px;}
+  .ws-key{margin-top:18px;break-before:page;}
+  .ws-key h3{margin:0 0 8px;}
+  .ws-keylist{columns:4;font-family:'Fredoka';font-weight:600;font-size:15px;}
+  @media (max-width:560px){.ws-list{grid-template-columns:1fr;}}
   @media print{
     @page{margin:12mm;}
     body{background:#fff;}
-    header.bar,nav.tabs,.no-print,.cardctl{display:none !important;}
+    header.bar,nav.tabs,.no-print,.cardctl,.menu-fab,.sidebar,.scrim{display:none !important;}
     .panel{display:none !important;}
     .panel.show{display:block !important;}
     body.printsel .panel{display:block !important;}
@@ -316,7 +360,7 @@
     </div>
     <div class="card">
       <h2 data-i="homeSectionsT"></h2>
-      <div class="guidegrid" id="guideGrid"></div>
+      <div id="guideGrid"></div>
     </div>
     <div class="card">
       <h2 data-i="homeTipsT"></h2>
@@ -712,10 +756,25 @@
     <div class="card no-print" id="quizSetup">
       <h2 data-i="pracT">Choose what to practice 🎯</h2>
       <p class="lead" data-i="pracL"></p>
-      <div class="topics" id="topicRow"></div>
-      <h3 data-i="qCountT" style="font-size:18px;margin:22px 0 8px"></h3>
-      <div class="topics" id="countRow"></div>
-      <div style="text-align:center;margin-top:22px"><button class="next" id="startBtn" onclick="startQuiz()"></button></div>
+      <div style="text-align:center"><div class="seg" id="pracSeg">
+        <button class="seg-btn" data-mode="quiz" aria-pressed="true" onclick="setPracticeMode('quiz')">🎯 <span data-i="pmQuiz"></span></button>
+        <button class="seg-btn" data-mode="worksheet" aria-pressed="false" onclick="setPracticeMode('worksheet')">🖨️ <span data-i="pmWorksheet"></span></button>
+      </div></div>
+      <div id="topicChooser" style="margin-top:16px"></div>
+      <div id="quizControls">
+        <h3 data-i="qCountT" style="font-size:18px;margin:18px 0 8px;text-align:center"></h3>
+        <div style="text-align:center"><select id="countSelect" class="qselect" onchange="quizLen=+this.value">
+          <option value="5">5</option><option value="10" selected>10</option><option value="15">15</option><option value="20">20</option><option value="25">25</option><option value="30">30</option><option value="40">40</option><option value="50">50</option>
+        </select></div>
+        <div style="text-align:center;margin-top:20px"><button class="next" id="startBtn" onclick="startQuiz()"></button></div>
+        <div id="quizMsg" class="fred" style="text-align:center;color:#d9534f;margin-top:8px"></div>
+      </div>
+      <div id="wsControls" class="hidden">
+        <label class="wsopt"><input type="checkbox" id="wsKey" checked> <span data-i="wsAnsKey"></span></label>
+        <p class="ttnote" data-i="wsHint" style="text-align:center;margin:10px 0 0"></p>
+        <div style="text-align:center;margin-top:14px"><button class="next" id="wsMakeBtn" onclick="makeWorksheet()"></button></div>
+        <div id="wsMsg" class="fred" style="text-align:center;color:#d9534f;margin-top:8px"></div>
+      </div>
     </div>
     <div class="card no-print hidden" id="quizPlay">
       <div class="scorebar"><span id="progText"></span><span class="stars" id="starRow"></span></div>
@@ -736,6 +795,13 @@
         <button class="next" id="againBtn" onclick="startQuiz()"></button>
         <button class="tbtn" id="changeBtn" onclick="backToSetup()"></button>
       </div>
+    </div>
+    <div class="card hidden" id="worksheetCard">
+      <div class="no-print" style="display:flex;gap:10px;justify-content:center;margin-bottom:16px;flex-wrap:wrap">
+        <button class="next" onclick="printWorksheet()" data-i="wsPrint"></button>
+        <button class="tbtn" onclick="closeWorksheet()" data-i="wsBack"></button>
+      </div>
+      <div id="worksheetBody"></div>
     </div>
   </section>
 
@@ -844,8 +910,8 @@ const STR={
   jL:{en:"Start on a number, then hop forward to add or backward to subtract. Watch where you land.",fr:"Pars d'un nombre, puis saute vers l'avant pour additionner ou vers l'arrière pour soustraire. Regarde où tu arrives."},
   jStartLab:{en:"Start at",fr:"Départ"},jOpLab:{en:"Hop",fr:"Saut"},jStepLab:{en:"How many hops",fr:"Combien de sauts"},
   homeT:{en:"Welcome! 👋",fr:"Bienvenue ! 👋"},
-  homeL:{en:"This is a toolbox for second-grade number sense. Each tab teaches one idea — here is what they cover. Tap a card to jump straight there.",fr:"Voici une boîte à outils pour le sens du nombre en 2e année. Chaque onglet enseigne une idée — voici ce qu'ils contiennent. Touche une carte pour t'y rendre."},
-  homeSectionsT:{en:"The sections",fr:"Les sections"},
+  homeL:{en:"A bilingual math toolbox for Grade 2 and 3. Explore number sense, the four operations, fractions, money and time, measurement, geometry, data and patterns — each with visuals you can tap and play with — then build your own practice quiz. Pick a section below to begin.",fr:"Une boîte à outils de maths bilingue pour la 2e et la 3e année. Explore le sens du nombre, les quatre opérations, les fractions, l'argent et l'heure, la mesure, la géométrie, les données et les suites — chacun avec des visuels interactifs — puis crée ton propre quiz. Choisis une section ci-dessous pour commencer."},
+  homeSectionsT:{en:"Explore by topic",fr:"Explorer par thème"},
   homeTipsT:{en:"Good to know",fr:"Bon à savoir"},
   homeTips:{en:"Use <b>Français / English</b> (top right) to switch language, <b>🖨️ Print</b> to print a whole page or just the pieces you tick, and <b>🔊 Sound</b> to mute or unmute.",fr:"Utilise <b>Français / English</b> (en haut à droite) pour changer de langue, <b>🖨️ Imprimer</b> pour imprimer une page entière ou seulement les morceaux cochés, et <b>🔊 Son</b> pour activer ou couper le son."},
   homeOpen:{en:"Open ➜",fr:"Ouvrir ➜"},
@@ -919,6 +985,22 @@ const STR={
   pracL:{en:"Pick your topics and how many questions, then start. Topics stay locked during the quiz.",fr:"Choisis tes sujets et le nombre de questions, puis commence. Les sujets restent fixes pendant le quiz."},
   qCountT:{en:"How many questions?",fr:"Combien de questions ?"},
   startBtn:{en:"▶ Start quiz",fr:"▶ Commencer le quiz"},
+  pmQuiz:{en:"Quiz",fr:"Quiz"},
+  pmWorksheet:{en:"Worksheet",fr:"Feuille d'exercices"},
+  selAll:{en:"All",fr:"Tout"},
+  selNone:{en:"None",fr:"Aucun"},
+  wsAnsKey:{en:"Include answer key",fr:"Inclure le corrigé"},
+  wsHint:{en:"Pick how many of each exercise you want, then make a printable page.",fr:"Choisis combien d'exercices de chaque type tu veux, puis crée une page à imprimer."},
+  wsMake:{en:"🖨️ Make worksheet",fr:"🖨️ Créer la feuille"},
+  wsEmpty:{en:"Add at least one exercise first.",fr:"Ajoute d'abord au moins un exercice."},
+  quizEmpty:{en:"Choose at least one topic first.",fr:"Choisis d'abord au moins un sujet."},
+  wsTitle:{en:"Math Worksheet",fr:"Feuille d'exercices de maths"},
+  wsName:{en:"Name",fr:"Nom"},
+  wsDate:{en:"Date",fr:"Date"},
+  wsAnswer:{en:"Answer",fr:"Réponse"},
+  wsKeyT:{en:"Answer key",fr:"Corrigé"},
+  wsPrint:{en:"🖨️ Print",fr:"🖨️ Imprimer"},
+  wsBack:{en:"← Back",fr:"← Retour"},
   qProgress:{en:"Question",fr:"Question"},
   seeResults:{en:"See results ➜",fr:"Voir les résultats ➜"},
   doneT:{en:"Quiz finished! 🎯",fr:"Quiz terminé ! 🎯"},
@@ -1018,7 +1100,17 @@ const GUIDE=[
   {id:'regroup',ic:'🔁',color:'tens',name:{en:'Regrouping',fr:'Regroupement'},desc:{en:'Carrying and borrowing — trading 10 for 1 (and back) — explained step by step.',fr:"La retenue et l'emprunt — échanger 10 contre 1 (et l'inverse) — expliqués étape par étape."}},
   {id:'practice',ic:'🎯',color:'ones',name:{en:'Practice',fr:'Exercices'},desc:{en:'Build a quiz from any topics, choose how many questions, and get a score.',fr:'Crée un quiz avec les sujets de ton choix, choisis le nombre de questions et obtiens un score.'}},
 ];
-function buildHome(){document.getElementById('guideGrid').innerHTML=GUIDE.map(g=>`<div class="guidetile" style="border-color:var(--${g.color})" onclick="goTab('${g.id}')"><div class="gt-ic">${g.ic}</div><div class="gt-name" style="color:var(--${g.color})">${g.name[LANG]}</div><div class="gt-desc">${g.desc[LANG]}</div><div class="gt-open" style="color:var(--${g.color})">${STR.homeOpen[LANG]}</div></div>`).join('');}
+function buildHome(){
+  const byId={};GUIDE.forEach(g=>byId[g.id]=g);
+  const tile=g=>`<div class="guidetile" style="border-color:var(--${g.color})" onclick="goTab('${g.id}')"><div class="gt-ic">${g.ic}</div><div class="gt-name" style="color:var(--${g.color})">${g.name[LANG]}</div><div class="gt-desc">${g.desc[LANG]}</div><div class="gt-open" style="color:var(--${g.color})">${STR.homeOpen[LANG]}</div></div>`;
+  const cat=(ic,label,tiles)=>`<div class="guidecat"><h3 class="guidecat-h"><span class="ic">${ic}</span>${label}</h3><div class="guidegrid">${tiles}</div></div>`;
+  let html='';
+  MENU.forEach(node=>{
+    if(node.type==='group'){html+=cat(node.ic,STR[node.key][LANG],node.items.map(it=>byId[it.id]).filter(Boolean).map(tile).join(''));}
+    else if(node.id==='practice'){html+=cat(node.ic,STR.tabPractice[LANG],tile(byId['practice']));}
+  });
+  document.getElementById('guideGrid').innerHTML=html;
+}
 function goTab(id){const btn=[...document.querySelectorAll('.tab[role=tab]')].find(b=>(b.getAttribute('onclick')||'').includes(`'${id}'`));if(btn){btn.click();window.scrollTo({top:0,behavior:'smooth'});}}
 function buildChart(){
   document.getElementById('demoFrame').innerHTML=frameHTML(2568,4,{showAll:true});
@@ -1494,11 +1586,56 @@ const TOPICS=[
 ];
 let score=0,asked=0,current=null,soundOn=true;
 let quizLen=10,quizCount=0,quizState='setup';
-const COUNTS=[5,10,15,20];
-function buildTopics(){document.getElementById('topicRow').innerHTML=TOPICS.map(t=>`<button class="topic ${t.cls}" aria-pressed="${t.on}" onclick="toggleTopic('${t.id}',this)">${t.lab[LANG]}</button>`).join('');}
-function buildCounts(){document.getElementById('countRow').innerHTML=COUNTS.map(n=>`<button class="topic t-count" aria-pressed="${n===quizLen}" onclick="setCount(${n},this)">${n}</button>`).join('');}
-function setCount(n,el){quizLen=n;document.querySelectorAll('#countRow .topic').forEach(b=>b.setAttribute('aria-pressed','false'));el.setAttribute('aria-pressed','true');}
-function toggleTopic(id,el){const t=TOPICS.find(x=>x.id===id);if(t.on&&TOPICS.filter(x=>x.on).length===1)return;t.on=!t.on;el.setAttribute('aria-pressed',t.on);}
+/* Practice topics grouped under the same umbrella categories as the menu. */
+const PCATS=[
+  {key:'catNumbers',ic:'🔢',ids:['pv','add','sub','roll','compare','round','frac','fraccmp','eqfrac','pattern','missing']},
+  {key:'catOps',ic:'➕',ids:['times','divide','factfam','carry','borrow','bigmult','bigadd','words']},
+  {key:'catMeasure',ic:'📐',ids:['money','change','clock','elapsed','perim','area','unit']},
+  {key:'catShapes',ic:'🔷',ids:['shapename','sides','tally','readgraph']}
+];
+let practiceMode='quiz';   /* 'quiz' or 'worksheet' */
+let wsCounts={};           /* worksheet: how many of each topic */
+/* Remember which category panels are open so a re-render doesn't collapse them */
+function chooserOpenState(){return [...document.querySelectorAll('#topicChooser .pcat')].map(p=>p.classList.contains('open'));}
+function pcatWrap(c,badge,badgeZero,inner,open){return `<div class="pcat${open?' open':''}"><button class="pcat-head" onclick="this.closest('.pcat').classList.toggle('open')"><span class="pcat-l"><span class="ic">${c.ic}</span>${STR[c.key][LANG]}</span><span class="pcat-r"><span class="pcat-badge${badgeZero?' zero':''}">${badge}</span><span class="chev">▸</span></span></button><div class="pcat-body">${inner}</div></div>`;}
+function buildChooser(openState){
+  const byId={};TOPICS.forEach(t=>byId[t.id]=t);
+  document.getElementById('topicChooser').innerHTML=PCATS.map((c,ci)=>{
+    const tops=c.ids.map(id=>byId[id]).filter(Boolean);
+    const open=openState?openState[ci]:ci===0;
+    if(practiceMode==='quiz'){
+      const sel=tops.filter(t=>t.on).length;
+      const inner=`<div class="pcat-tools"><button onclick="catAll('${c.key}',true)">${STR.selAll[LANG]}</button><button onclick="catAll('${c.key}',false)">${STR.selNone[LANG]}</button></div><div class="topics">`+tops.map(t=>`<button class="topic ${t.cls}" aria-pressed="${t.on}" onclick="toggleTopic('${t.id}')">${t.lab[LANG]}</button>`).join('')+`</div>`;
+      return pcatWrap(c,sel,sel===0,inner,open);
+    }else{
+      const total=tops.reduce((s,t)=>s+(wsCounts[t.id]||0),0);
+      const inner=`<div class="wslist">`+tops.map(t=>{const n=wsCounts[t.id]||0;return `<div class="wsrow ${n>0?'on':''}"><span class="wslab">${t.lab[LANG]}</span><span class="wsstep"><button onclick="wsStep('${t.id}',-1)" aria-label="less">−</button><b>${n}</b><button onclick="wsStep('${t.id}',1)" aria-label="more">+</button></span></div>`;}).join('')+`</div>`;
+      return pcatWrap(c,total,total===0,inner,open);
+    }
+  }).join('');
+}
+function setPracticeMode(m){practiceMode=m;document.querySelectorAll('#pracSeg .seg-btn').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mode===m));document.getElementById('quizControls').classList.toggle('hidden',m!=='quiz');document.getElementById('wsControls').classList.toggle('hidden',m!=='worksheet');document.getElementById('quizMsg').textContent='';document.getElementById('wsMsg').textContent='';buildChooser();}
+function toggleTopic(id){const t=TOPICS.find(x=>x.id===id);if(t)t.on=!t.on;buildChooser(chooserOpenState());}
+function catAll(key,on){const c=PCATS.find(x=>x.key===key);if(c)c.ids.forEach(id=>{const t=TOPICS.find(x=>x.id===id);if(t)t.on=on;});buildChooser(chooserOpenState());}
+function wsStep(id,d){wsCounts[id]=Math.max(0,Math.min(20,(wsCounts[id]||0)+d));buildChooser(chooserOpenState());}
+/* Build a printable worksheet from the per-topic counts. */
+function makeWorksheet(){
+  const ids=[];TOPICS.forEach(t=>{const n=wsCounts[t.id]||0;for(let i=0;i<n;i++)ids.push(t.id);});
+  if(!ids.length){document.getElementById('wsMsg').textContent=STR.wsEmpty[LANG];return;}
+  document.getElementById('wsMsg').textContent='';
+  shuffle(ids);
+  const qs=ids.map(id=>GEN[id]());
+  const withKey=document.getElementById('wsKey').checked;
+  let body=`<div class="ws-head"><h2>${STR.wsTitle[LANG]}</h2><div class="ws-meta">${STR.wsName[LANG]} : ______________________   ${STR.wsDate[LANG]} : ____________</div></div>`;
+  body+=`<ol class="ws-list">`+qs.map(q=>`<li class="ws-q"><span class="ws-ask">${q.ask||''}</span><div class="ws-big">${q.bigHTML}</div><div class="ws-ans">${STR.wsAnswer[LANG]} : ____________</div></li>`).join('')+`</ol>`;
+  if(withKey)body+=`<div class="ws-key"><h3>${STR.wsKeyT[LANG]}</h3><ol class="ws-keylist">`+qs.map(q=>`<li>${q.answer}</li>`).join('')+`</ol></div>`;
+  document.getElementById('worksheetBody').innerHTML=body;
+  document.getElementById('quizSetup').classList.add('hidden');
+  document.getElementById('worksheetCard').classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function printWorksheet(){window.print();}
+function closeWorksheet(){document.getElementById('worksheetCard').classList.add('hidden');document.getElementById('quizSetup').classList.remove('hidden');}
 function makeChoices(ans,extra=[]){const set=new Set([ans,...extra.filter(x=>x>=0)]);let g=0;while(set.size<4&&g<80){g++;const r=rand(4);let c;if(r===0)c=ans+pick([1,-1,10,-10,100]);else if(r===1)c=ans+pick([2,-2,20,-20]);else if(r===2)c=Math.max(0,ans+pick([3,-3,9,11]));else c=ans+pick([100,-100,1]);if(c>=0&&c!==ans)set.add(c);}return shuffle([...set].slice(0,4));}
 /* GEN: one question generator per practice topic. Each returns
    {ask, bigHTML, answer, choices, explainHTML}. IMPORTANT: always add new
@@ -1541,9 +1678,9 @@ function serveQuestion(){const live=TOPICS.filter(t=>t.on);current=GEN[pick(live
 function nextQuestion(){if(quizCount>=quizLen-1){finishQuiz();}else{quizCount++;serveQuestion();}}
 /* Practice quiz flow: setup -> playing -> done. Topics are chosen before
    starting and locked during play. */
-function startQuiz(){score=0;asked=0;quizCount=0;quizState='playing';document.getElementById('quizSetup').classList.add('hidden');document.getElementById('quizDone').classList.add('hidden');document.getElementById('quizPlay').classList.remove('hidden');serveQuestion();}
+function startQuiz(){if(!TOPICS.some(t=>t.on)){const m=document.getElementById('quizMsg');if(m)m.textContent=STR.quizEmpty[LANG];return;}score=0;asked=0;quizCount=0;quizState='playing';document.getElementById('quizSetup').classList.add('hidden');document.getElementById('quizDone').classList.add('hidden');document.getElementById('worksheetCard').classList.add('hidden');document.getElementById('quizPlay').classList.remove('hidden');serveQuestion();}
 function finishQuiz(){quizState='done';document.getElementById('quizPlay').classList.add('hidden');document.getElementById('quizDone').classList.remove('hidden');const pct=asked?score/asked:0;const msg=pct>=1?STR.msgPerfect[LANG]:pct>=0.8?STR.msgGreat[LANG]:pct>=0.5?STR.msgGood[LANG]:STR.msgTry[LANG];document.getElementById('doneBody').innerHTML=`<div class="bigeq" style="margin:6px 0">${score} / ${quizLen}</div><div class="stars" style="font-size:30px">${'⭐'.repeat(Math.min(5,Math.round(pct*5)))}</div><p class="fred" style="font-size:20px;font-weight:600;margin-top:10px">${msg}</p>`;}
-function backToSetup(){quizState='setup';document.getElementById('quizPlay').classList.add('hidden');document.getElementById('quizDone').classList.add('hidden');document.getElementById('quizSetup').classList.remove('hidden');}
+function backToSetup(){quizState='setup';document.getElementById('quizPlay').classList.add('hidden');document.getElementById('quizDone').classList.add('hidden');document.getElementById('worksheetCard').classList.add('hidden');document.getElementById('quizSetup').classList.remove('hidden');}
 function answer(el,idx){const btns=[...document.querySelectorAll('.choice')];btns.forEach(b=>b.disabled=true);const correct=String(current.choices[idx])===String(current.answer);const fb=document.getElementById('qFeedback');asked++;if(correct){el.classList.add('right');score++;fb.textContent=STR.fbOk[LANG];fb.className='feedback ok';beep(true);}else{el.classList.add('wrong');btns.forEach((b,k)=>{if(String(current.choices[k])===String(current.answer))b.classList.add('right');});fb.textContent=STR.fbNo[LANG];fb.className='feedback no';beep(false);}const ex=document.getElementById('qExplain');ex.innerHTML=current.explainHTML;ex.className='explain';const nb=document.getElementById('nextBtn');nb.textContent=(quizCount>=quizLen-1)?STR.seeResults[LANG]:STR.next[LANG];nb.className='next';updateScore();}
 function updateScore(){document.getElementById('starRow').textContent='⭐'.repeat(Math.min(5,Math.floor(score/3)));}
 
@@ -1585,10 +1722,11 @@ function applyLang(){
   document.getElementById('soundBtn').textContent=soundOn?STR.soundOn[LANG]:STR.soundOff[LANG];
   document.getElementById('nextBtn').textContent=quizState==='playing'&&quizCount>=quizLen-1?STR.seeResults[LANG]:STR.next[LANG];
   document.getElementById('startBtn').textContent=STR.startBtn[LANG];
+  document.getElementById('wsMakeBtn').textContent=STR.wsMake[LANG];
   document.getElementById('againBtn').textContent=STR.again[LANG];
   document.getElementById('changeBtn').textContent=STR.change[LANG];
   document.getElementById('quitBtn').textContent=STR.change[LANG];
-  buildHome();buildMenu();buildChart();buildAddGrid();buildNumbers();buildNumLine();buildCompare();buildDivide();buildTimes();buildArrayViewer();buildDD();buildFractions();buildFractionsExtra();buildWords();buildRegroup();buildMoney();buildTime();buildMeasure();buildGeometry();buildData();buildPatterns();buildBigOps();buildTopics();buildCounts();updateScore();
+  buildHome();buildMenu();buildChart();buildAddGrid();buildNumbers();buildNumLine();buildCompare();buildDivide();buildTimes();buildArrayViewer();buildDD();buildFractions();buildFractionsExtra();buildWords();buildRegroup();buildMoney();buildTime();buildMeasure();buildGeometry();buildData();buildPatterns();buildBigOps();setPracticeMode(practiceMode);updateScore();
   addPrintControls();updateSelBtn();
 }
 function toggleLang(){LANG=LANG==='fr'?'en':'fr';applyLang();}
