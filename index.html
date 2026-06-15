@@ -3,33 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Math Helper — Numbers · Times · Fractions · Words</title>
+<title>Ms Ellie's Math Helper</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
+  /* ============================================================
+     DESIGN TOKENS
+     Colours, surfaces, text and shadows live here as CSS variables.
+     The place-value colour coding (ones/tens/hundreds/thousands/frac)
+     is identical in light and dark mode. Only the "shell" surfaces
+     (page background, header, drawer) change with the theme — the
+     learning cards always stay a bright paper workspace so every
+     coloured visual inside them keeps its contrast.
+     ============================================================ */
   :root{
+    /* place-value colour coding (same in light & dark) */
     --ones:#2f9e57;--ones-bg:#e4f6ea;--tens:#2f74d0;--tens-bg:#e3eefb;
     --hundreds:#e07b28;--hundreds-bg:#fdeedf;--thousands:#7c4dc4;--thousands-bg:#f0e8fb;
     --frac:#d9577a;--frac-bg:#fbe6ec;
-    --paper:#fbf6ec;--card:#ffffff;--ink:#3a3530;--soft:#8a8178;--line:#e8ddca;
-    --good:#2f9e57;--gentle:#d98a3d;--shadow:0 6px 0 rgba(0,0,0,.06),0 12px 28px rgba(120,90,40,.10);--radius:22px;
+    /* light-theme surfaces & text */
+    --paper:#fbf6ec;--card:#ffffff;--surface:#ffffff;--ink:#3a3530;--soft:#8a8178;--line:#e8ddca;
+    --glass:rgba(251,246,236,.82);--focus:#7c4dc4;
+    --good:#2f9e57;--gentle:#d98a3d;
+    --shadow:0 6px 0 rgba(0,0,0,.06),0 12px 28px rgba(120,90,40,.10);--radius:22px;
+  }
+  /* dark mode only retints the shell; --card stays light on purpose */
+  body.dark{
+    --paper:#14161e;--surface:#222736;--ink:#eef1f7;--soft:#9aa3b4;--line:#333b4d;
+    --glass:rgba(20,22,30,.82);
+    --shadow:0 6px 0 rgba(0,0,0,.22),0 16px 34px rgba(0,0,0,.5);
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
-  body{font-family:'Nunito',sans-serif;background:radial-gradient(circle at 12% 8%,#fff7e9 0,transparent 40%),radial-gradient(circle at 90% 4%,#f3ecfb 0,transparent 38%),var(--paper);color:var(--ink);min-height:100vh;-webkit-text-size-adjust:100%;}
+  body{font-family:'Nunito',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;-webkit-text-size-adjust:100%;transition:background .35s ease,color .35s ease;}
+  body:not(.dark){background:radial-gradient(circle at 12% 8%,#fff7e9 0,transparent 40%),radial-gradient(circle at 90% 4%,#f3ecfb 0,transparent 38%),var(--paper);}
+  body.dark{background:radial-gradient(circle at 12% 8%,#1d2236 0,transparent 44%),radial-gradient(circle at 88% 2%,#251d38 0,transparent 40%),var(--paper);}
   h1,h2,h3,.fred{font-family:'Fredoka',sans-serif;font-weight:600;}
-  .wrap{max-width:1000px;margin:0 auto;padding:18px 16px 60px;}
-  header.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 16px 60px;}
+  header.bar{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 -16px 16px;padding:12px 16px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
   .title{display:flex;align-items:center;gap:12px;}
-  .title .logo{font-size:30px;line-height:1;background:#fff;border:3px solid var(--line);border-radius:16px;padding:8px 12px;box-shadow:var(--shadow);}
+  .title .logo{font-size:30px;line-height:1;background:var(--surface);border:3px solid var(--line);border-radius:16px;padding:8px 12px;box-shadow:var(--shadow);}
   .title h1{font-size:24px;margin:0;letter-spacing:.3px;}
   .title p{margin:2px 0 0;color:var(--soft);font-weight:700;font-size:13px;}
   .tools{display:flex;gap:8px;flex-wrap:wrap;}
-  .tbtn{font-family:'Fredoka';font-size:15px;border:3px solid var(--line);background:#fff;color:var(--ink);border-radius:14px;padding:9px 14px;cursor:pointer;box-shadow:var(--shadow);transition:transform .08s;}
+  .tbtn{font-family:'Fredoka';font-size:15px;border:3px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:9px 14px;cursor:pointer;box-shadow:var(--shadow);transition:transform .1s ease,border-color .25s ease,background .25s ease,box-shadow .25s ease;}
+  .tbtn:hover{border-color:var(--soft);transform:translateY(-1px);}
   .tbtn:active{transform:translateY(2px);}
   .tbtn.lang{border-color:var(--ink);}
   .tbtn.sel{border-color:var(--thousands);color:var(--thousands);}
+  :focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px;}
+  /* ===== SLIDE-IN DRAWER MENU (off-canvas, tap backdrop to close) ===== */
+  /* Floating menu button, kept low-left so it is easy to reach on a
+     smartboard. It hides while the drawer is open. */
+  .menu-fab{position:fixed;left:16px;bottom:16px;z-index:45;display:flex;align-items:center;gap:8px;font-family:'Fredoka';font-weight:600;font-size:16px;border:3px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:12px 18px;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.08),0 14px 30px rgba(80,60,30,.22);transition:transform .12s ease,box-shadow .2s ease,opacity .2s ease,background .25s ease;}
+  .menu-fab .fab-ic{font-size:20px;line-height:1;}
+  .menu-fab:hover{transform:translateY(-2px);}
+  .menu-fab:active{transform:translateY(0);}
+  body.menu-open .menu-fab{opacity:0;pointer-events:none;transform:translateY(8px);}
   .layout{display:block;}
   .content{width:100%;}
   .sidebar{position:fixed;top:0;left:0;height:100vh;width:248px;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;padding:18px 14px;background:var(--paper);box-shadow:6px 0 24px rgba(20,18,40,.18);overflow-y:auto;z-index:60;transform:translateX(-104%);transition:transform .26s cubic-bezier(.4,0,.2,1);overscroll-behavior:contain;}
@@ -40,32 +71,37 @@
   .draw-head b{font-family:'Fredoka';font-size:18px;color:var(--ink);}
   .draw-close{border:none;background:none;font-size:22px;line-height:1;cursor:pointer;color:var(--soft);padding:4px 6px;border-radius:8px;}
   .draw-close:hover{background:#0000000d;}
-  .tab{font-family:'Fredoka';font-size:17px;font-weight:500;border:3px solid var(--line);background:#fff;color:var(--soft);border-radius:16px;padding:11px 16px;cursor:pointer;box-shadow:var(--shadow);transition:transform .08s,color .15s,border-color .15s;display:flex;align-items:center;gap:8px;}
+  .tab{font-family:'Fredoka';font-size:17px;font-weight:500;border:3px solid var(--line);background:var(--surface);color:var(--soft);border-radius:16px;padding:11px 16px;cursor:pointer;box-shadow:var(--shadow);transition:transform .1s ease,color .15s ease,border-color .15s ease,background .25s ease;display:flex;align-items:center;gap:8px;}
   .tab .ic{font-size:20px;}
   .tab[aria-selected="true"]{color:var(--ink);border-color:var(--ink);}
-  .tab:active{transform:translateY(2px);}
+  .tab:hover{border-color:var(--soft);}
+  .tab:active{transform:translateY(1px);}
   .sidebar .tab{width:100%;justify-content:flex-start;font-size:16px;font-weight:600;padding:9px 13px;border-width:2px;border-radius:12px;}
-  .sidebar .tab[aria-selected="true"]{background:#fff;border-color:var(--ink);box-shadow:0 2px 0 var(--ink);}
+  .sidebar .tab[aria-selected="true"]{background:var(--surface);border-color:var(--ink);box-shadow:0 2px 0 var(--ink);}
   #menuList{display:flex;flex-direction:column;gap:6px;}
   .menu-group{display:flex;flex-direction:column;}
-  .menu-ghead{font-family:'Fredoka';font-weight:600;font-size:16px;display:flex;align-items:center;gap:8px;justify-content:space-between;border:2px solid var(--line);background:#fff;border-radius:12px;padding:10px 13px;cursor:pointer;color:var(--ink);width:100%;}
+  .menu-ghead{font-family:'Fredoka';font-weight:600;font-size:16px;display:flex;align-items:center;gap:8px;justify-content:space-between;border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 13px;cursor:pointer;color:var(--ink);width:100%;transition:border-color .2s ease,background .25s ease;}
   .menu-ghead .ic{font-size:20px;}
-  .menu-ghead .chev{transition:transform .2s;color:var(--soft);font-size:15px;}
+  .menu-ghead .chev{transition:transform .25s ease;color:var(--soft);font-size:15px;}
   .menu-group.open .menu-ghead{border-color:var(--ink);}
   .menu-group.open .menu-ghead .chev{transform:rotate(90deg);}
-  .menu-items{display:none;flex-direction:column;gap:5px;padding:6px 0 4px 12px;}
-  .menu-group.open .menu-items{display:flex;}
-  section.panel{display:none;animation:pop .25s ease;}
+  .menu-items{display:flex;flex-direction:column;gap:5px;max-height:0;opacity:0;overflow:hidden;padding:0 0 0 12px;transition:max-height .3s ease,opacity .25s ease,padding .3s ease;}
+  .menu-group.open .menu-items{max-height:520px;opacity:1;padding:6px 0 4px 12px;}
+  section.panel{display:none;animation:pop .3s cubic-bezier(.22,.61,.36,1);}
   section.panel.show{display:block;}
-  @keyframes pop{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
-  .card{position:relative;background:var(--card);border:3px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin-bottom:18px;}
+  @keyframes pop{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  /* Cards are an always-light "paper" workspace. Re-scoping the text/line/
+     surface tokens here keeps every card (and its buttons, notes and SVG
+     visuals) bright and readable even when the shell is in dark mode. */
+  .card{--ink:#3a3530;--soft:#8a8178;--line:#e8ddca;--surface:#ffffff;position:relative;background:var(--card);border:3px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin-bottom:18px;color:var(--ink);}
   .card h2{margin:0 0 4px;font-size:22px;}
   .printable h2{padding-right:70px;}
   #wordsContainer{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;}
   #wordsContainer .card{margin-bottom:0;padding:16px;}
   .guidegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;}
-  .guidetile{border:3px solid var(--line);border-radius:18px;padding:16px;background:#fff;cursor:pointer;transition:transform .08s;box-shadow:var(--shadow);text-align:left;display:flex;flex-direction:column;gap:6px;}
-  .guidetile:active{transform:translateY(2px);}
+  .guidetile{border:3px solid var(--line);border-radius:18px;padding:16px;background:#fff;cursor:pointer;transition:transform .15s ease,box-shadow .2s ease,border-color .2s ease;box-shadow:var(--shadow);text-align:left;display:flex;flex-direction:column;gap:6px;}
+  .guidetile:hover{transform:translateY(-3px);box-shadow:0 10px 0 rgba(0,0,0,.05),0 18px 36px rgba(120,90,40,.16);}
+  .guidetile:active{transform:translateY(0);}
   .guidetile .gt-ic{font-size:30px;}
   .guidetile .gt-name{font-family:'Fredoka';font-weight:600;font-size:19px;}
   .guidetile .gt-desc{font-size:14px;color:var(--soft);font-weight:700;line-height:1.35;}
@@ -204,7 +240,8 @@
   .qbig{margin:6px 0 18px;display:flex;justify-content:center;align-items:center;min-height:60px;flex-wrap:wrap;gap:8px;}
   .bigeq{font-family:'Fredoka';font-weight:700;font-size:52px;color:var(--ink);}
   .choices{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:480px;margin:0 auto;}
-  .choice{font-family:'Fredoka';font-weight:600;font-size:30px;border:3px solid var(--line);background:#fff;border-radius:18px;padding:18px 6px;cursor:pointer;color:var(--ink);box-shadow:var(--shadow);transition:transform .08s;min-height:76px;}
+  .choice{font-family:'Fredoka';font-weight:600;font-size:30px;border:3px solid var(--line);background:#fff;border-radius:18px;padding:18px 6px;cursor:pointer;color:var(--ink);box-shadow:var(--shadow);transition:transform .12s ease,border-color .2s ease,box-shadow .2s ease;min-height:76px;}
+  .choice:hover{transform:translateY(-2px);border-color:var(--soft);}
   .choice:active{transform:translateY(2px);}
   .choice.right{border-color:var(--good);background:var(--ones-bg);color:var(--good);}
   .choice.wrong{border-color:#d98a3d;background:#fdeedf;color:#c8722a;opacity:.85;}
@@ -218,6 +255,15 @@
   .hidden{display:none !important;}
   .teach{font-size:13px;color:var(--soft);font-weight:700;margin-top:10px;}
   .printhint{font-size:13px;color:var(--soft);font-weight:700;text-align:center;margin-top:6px;}
+  /* Thin, themed scrollbar inside the drawer only */
+  .sidebar::-webkit-scrollbar{width:9px;}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--line);border-radius:9px;}
+  .sidebar::-webkit-scrollbar-track{background:transparent;}
+  .sidebar{scrollbar-width:thin;scrollbar-color:var(--line) transparent;}
+  /* Respect users who prefer less motion (calm by default for this audience) */
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important;}
+  }
   @media print{
     @page{margin:12mm;}
     body{background:#fff;}
@@ -240,16 +286,18 @@
   <header class="bar">
     <div class="title">
       <div class="logo">🔢</div>
-      <div><h1 data-i="appTitle">Math Helper</h1><p data-i="appSub">Numbers · Times · Fractions · Words</p></div>
+      <div><h1 data-i="appTitle">Ms Ellie's Math Helper</h1><p data-i="appSub">Grade 2 &amp; 3 math · Québec curriculum</p></div>
     </div>
     <div class="tools">
-      <button class="tbtn" id="menuToggle" onclick="toggleMenu()" aria-label="Menu">☰ <span data-i="menuLabel">Menu</span></button>
+      <button class="tbtn" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button>
       <button class="tbtn lang" id="langBtn" onclick="toggleLang()">Français</button>
       <button class="tbtn sel" id="printSelBtn" onclick="printSelected()" style="display:none"></button>
       <button class="tbtn" id="soundBtn" onclick="toggleSound()"></button>
       <button class="tbtn" id="printBtn" onclick="printPage()"></button>
     </div>
   </header>
+
+  <button class="menu-fab" id="menuToggle" onclick="toggleMenu()" aria-label="Open menu"><span class="fab-ic">☰</span><span data-i="menuLabel">Menu</span></button>
 
   <div class="layout">
     <nav class="sidebar" id="sidebar" role="tablist">
@@ -697,6 +745,23 @@
 </div>
 
 <script>
+/* ====================================================================
+   MATH HELPER — how this file is organised (single-file app, no build)
+   --------------------------------------------------------------------
+   • LANGUAGE:  every visible string lives in the STR object as {en,fr}.
+                L(en,fr) returns the right one based on the global LANG.
+                Static elements carry data-i="key"; applyLang() fills them.
+   • NAVIGATION: the MENU array describes the left drawer (groups + links).
+                buildMenu() renders it; showTab(id) swaps the visible panel.
+   • LEARNING TABS: each section is a <section class="panel" id="...">.
+                A buildX() function (re)draws its contents; applyLang()
+                calls them all so everything redraws on a language switch.
+   • PRACTICE:  the GEN object has one generator per quiz topic. TOPICS
+                lists them. startQuiz/serveQuestion/answer run the quiz.
+   • PRINTING:  cards with class "printable" get a print control; the
+                print CSS hides everything except the selected cards.
+   • THEME:     setTheme()/toggleTheme() flip the body.dark class.
+   ==================================================================== */
 let LANG='en';
 let curTab='home';
 const MENU=[
@@ -708,12 +773,14 @@ const MENU=[
   {type:'link',id:'practice',ic:'🎯',key:'tabPractice'}
 ];
 function leafBtn(it){const sel=curTab===it.id;return `<button class="tab" role="tab" data-id="${it.id}" aria-selected="${sel}" onclick="showTab('${it.id}')"><span class="ic">${it.ic}</span><span>${STR[it.key][LANG]}</span></button>`;}
-function buildMenu(){document.getElementById('menuList').innerHTML=MENU.map(node=>{if(node.type==='link')return leafBtn(node);const active=node.items.some(it=>it.id===curTab);return `<div class="menu-group${active?' open':''}"><button class="menu-ghead" onclick="toggleGroup(this)"><span style="display:flex;align-items:center;gap:8px"><span class="ic">${node.ic}</span>${STR[node.key][LANG]}</span><span class="chev">▸</span></button><div class="menu-items">${node.items.map(leafBtn).join('')}</div></div>`;}).join('');}
+function buildMenu(){document.getElementById('menuList').innerHTML=MENU.map(node=>{if(node.type==='link')return leafBtn(node);return `<div class="menu-group"><button class="menu-ghead" onclick="toggleGroup(this)"><span style="display:flex;align-items:center;gap:8px"><span class="ic">${node.ic}</span>${STR[node.key][LANG]}</span><span class="chev">▸</span></button><div class="menu-items">${node.items.map(leafBtn).join('')}</div></div>`;}).join('');}
 function toggleGroup(h){h.parentElement.classList.toggle('open');}
 const L=(en,fr)=>LANG==='fr'?fr:en;
+/* STR: the bilingual dictionary. Add a new key here as {en:"...",fr:"..."}
+   and reference it with a data-i="key" attribute or STR.key[LANG] in code. */
 const STR={
-  appTitle:{en:"Math Helper",fr:"Aide-Maths"},
-  appSub:{en:"Place value · Multiplication · Fractions · Regrouping",fr:"Valeur de position · Multiplication · Fractions · Regroupement"},
+  appTitle:{en:"Ms Ellie's Math Helper",fr:"L'aide en maths de Mme Ellie"},
+  appSub:{en:"Grade 2 & 3 math · Québec curriculum",fr:"Maths de 2e et 3e année · programme du Québec"},
   tabChart:{en:"Place Value",fr:"Valeur de position"},tabNumbers:{en:"Base-Ten Blocks",fr:"Base dix"},tabTimes:{en:"Multiplication",fr:"Multiplication"},
   tabHome:{en:"Home",fr:"Accueil"},
   menuLabel:{en:"Menu",fr:"Menu"},
@@ -1433,6 +1500,11 @@ function buildCounts(){document.getElementById('countRow').innerHTML=COUNTS.map(
 function setCount(n,el){quizLen=n;document.querySelectorAll('#countRow .topic').forEach(b=>b.setAttribute('aria-pressed','false'));el.setAttribute('aria-pressed','true');}
 function toggleTopic(id,el){const t=TOPICS.find(x=>x.id===id);if(t.on&&TOPICS.filter(x=>x.on).length===1)return;t.on=!t.on;el.setAttribute('aria-pressed',t.on);}
 function makeChoices(ans,extra=[]){const set=new Set([ans,...extra.filter(x=>x>=0)]);let g=0;while(set.size<4&&g<80){g++;const r=rand(4);let c;if(r===0)c=ans+pick([1,-1,10,-10,100]);else if(r===1)c=ans+pick([2,-2,20,-20]);else if(r===2)c=Math.max(0,ans+pick([3,-3,9,11]));else c=ans+pick([100,-100,1]);if(c>=0&&c!==ans)set.add(c);}return shuffle([...set].slice(0,4));}
+/* GEN: one question generator per practice topic. Each returns
+   {ask, bigHTML, answer, choices, explainHTML}. IMPORTANT: always add new
+   generators INSIDE this object literal (never as GEN.x=... earlier in the
+   file) — doing otherwise crashes the page with a "before initialization"
+   error. Every id listed in TOPICS must have a matching method here. */
 const GEN={
   pv(){const n=pick([47,68,352,605,1297,2568,830,409,756,2030]);const d=digits(n);const p=pick(PLACES.filter(x=>n>=x.val));return{ask:L(`In ${n}, what number is in the ${p.name.en.toLowerCase()} spot?`,`Dans ${n}, quel chiffre est à la place des ${p.name.fr.toLowerCase()} ?`),bigHTML:frameHTML(n,4),answer:d[p.key],choices:makeChoices(d[p.key],[(d[p.key]+1)%10,(d[p.key]+2)%10]),explainHTML:`${expandHTML(n)}<p><b style="color:var(--${p.key})">${L(p.name.en+' spot',p.name.fr.toLowerCase())}</b> ${L('holds','contient')} <b style="color:var(--${p.key})">${d[p.key]}</b>.</p>`};},
   add(){const k=pick(['to','th','big']);let a,b;if(k==='to'){a=pick([10,20,30,40,50,60,70,80,90]);b=1+rand(9);}else if(k==='th'){a=pick([100,200,300,400,500,600,700,800,900]);b=pick([10,20,30,40,50,60,70,80,90]);}else{a=pick([100,1000]);b=a===100?(11+rand(80)):(101+rand(896));}const ans=a+b,need=ans>=1000?4:ans>=100?3:2;return{ask:L('Snap them together:','Assemble-les :'),bigHTML:stackedSum(a,b,need,true),answer:ans,choices:makeChoices(ans,[a,b]),explainHTML:`<p><b style="color:var(--tens)">${a}</b> ${L('and','et')} <b style="color:var(--ones)">${b}</b> ${L('slide together →','se glissent ensemble →')} <b>${ans}</b>.</p>${stackedSum(a,b,need,false)}`};},
@@ -1467,6 +1539,8 @@ const GEN={
 };
 function serveQuestion(){const live=TOPICS.filter(t=>t.on);current=GEN[pick(live).id]();document.getElementById('qAsk').textContent=current.ask;document.getElementById('qAsk').style.display=current.ask?'block':'none';document.getElementById('qBig').innerHTML=current.bigHTML;document.getElementById('qChoices').innerHTML=current.choices.map((c,i)=>`<button class="choice" onclick="answer(this,${i})">${c}</button>`).join('');document.getElementById('qFeedback').textContent='';document.getElementById('qFeedback').className='feedback';document.getElementById('qExplain').className='explain hidden';document.getElementById('nextBtn').className='next hidden';document.getElementById('progText').textContent=`${STR.qProgress[LANG]} ${quizCount+1} / ${quizLen}`;updateScore();}
 function nextQuestion(){if(quizCount>=quizLen-1){finishQuiz();}else{quizCount++;serveQuestion();}}
+/* Practice quiz flow: setup -> playing -> done. Topics are chosen before
+   starting and locked during play. */
 function startQuiz(){score=0;asked=0;quizCount=0;quizState='playing';document.getElementById('quizSetup').classList.add('hidden');document.getElementById('quizDone').classList.add('hidden');document.getElementById('quizPlay').classList.remove('hidden');serveQuestion();}
 function finishQuiz(){quizState='done';document.getElementById('quizPlay').classList.add('hidden');document.getElementById('quizDone').classList.remove('hidden');const pct=asked?score/asked:0;const msg=pct>=1?STR.msgPerfect[LANG]:pct>=0.8?STR.msgGreat[LANG]:pct>=0.5?STR.msgGood[LANG]:STR.msgTry[LANG];document.getElementById('doneBody').innerHTML=`<div class="bigeq" style="margin:6px 0">${score} / ${quizLen}</div><div class="stars" style="font-size:30px">${'⭐'.repeat(Math.min(5,Math.round(pct*5)))}</div><p class="fred" style="font-size:20px;font-weight:600;margin-top:10px">${msg}</p>`;}
 function backToSetup(){quizState='setup';document.getElementById('quizPlay').classList.add('hidden');document.getElementById('quizDone').classList.add('hidden');document.getElementById('quizSetup').classList.remove('hidden');}
@@ -1497,9 +1571,12 @@ function toggleSound(){soundOn=!soundOn;document.getElementById('soundBtn').text
 
 /* TABS + LANG */
 function showTab(id){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('show'));const p=document.getElementById(id);if(p)p.classList.add('show');curTab=id;buildMenu();closeMenu();window.scrollTo({top:0,behavior:'smooth'});}
-function toggleMenu(){document.body.classList.toggle('menu-open');}
+function toggleMenu(){const willOpen=!document.body.classList.contains('menu-open');document.body.classList.toggle('menu-open',willOpen);if(willOpen)buildMenu();}
 function closeMenu(){document.body.classList.remove('menu-open');}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
+/* applyLang(): the heart of the app. Sets every data-i element's text for
+   the current LANG, then calls all the buildX() functions to redraw each
+   tab. Runs once on load and again whenever the language is toggled. */
 function applyLang(){
   document.documentElement.lang=LANG;
   document.querySelectorAll('[data-i]').forEach(el=>{const k=el.getAttribute('data-i');if(STR[k])el.innerHTML=STR[k][LANG];});
@@ -1515,6 +1592,13 @@ function applyLang(){
   addPrintControls();updateSelBtn();
 }
 function toggleLang(){LANG=LANG==='fr'?'en':'fr';applyLang();}
+/* ---- Dark mode -------------------------------------------------------
+   Toggles the body.dark class (which re-tints only the shell tokens).
+   The choice is saved between visits when storage is available, and
+   otherwise falls back to the device's colour-scheme preference. */
+function setTheme(dark){document.body.classList.toggle('dark',dark);const b=document.getElementById('themeBtn');if(b)b.textContent=dark?'☀️':'🌙';try{localStorage.setItem('mh_theme',dark?'dark':'light');}catch(e){}}
+function toggleTheme(){setTheme(!document.body.classList.contains('dark'));}
+(function(){let dark=false;try{const t=localStorage.getItem('mh_theme');if(t)dark=(t==='dark');else if(window.matchMedia)dark=window.matchMedia('(prefers-color-scheme:dark)').matches;}catch(e){}setTheme(dark);})();
 applyLang();
 </script>
 </body>
