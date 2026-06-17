@@ -295,6 +295,14 @@
   .wsstep b{min-width:20px;text-align:center;font-family:'Fredoka';font-size:17px;}
   .wsopt{display:flex;align-items:center;gap:8px;justify-content:center;font-family:'Fredoka';font-weight:600;font-size:16px;cursor:pointer;}
   .qselect{font-family:'Fredoka';font-weight:600;font-size:18px;border:3px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:10px 18px;cursor:pointer;}
+  .sp-card{border-style:dashed;}
+  .sp-tag{font-family:'Fredoka';font-weight:600;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--thousands);}
+  .sp-box{text-align:center;}
+  .sp-ask{font-family:'Fredoka';font-weight:600;font-size:18px;margin-bottom:8px;}
+  .sp-big{margin:6px 0;}
+  .sp-a{margin-top:14px;padding-top:12px;border-top:2px dashed var(--line);}
+  .sp-ans{font-family:'Fredoka';font-size:21px;font-weight:600;}
+  .sp-exp{margin-top:8px;color:var(--soft);}
   .ws-head{text-align:center;margin-bottom:16px;}
   .ws-head h2{margin:0 0 6px;}
   .ws-meta{font-family:'Fredoka';font-weight:600;color:var(--soft);font-size:14px;}
@@ -320,6 +328,7 @@
     .card{box-shadow:none;border:2px solid #999;break-inside:avoid;margin-bottom:10px;}
     .printable h2{padding-right:0;}
     .cellbox,.choice{box-shadow:none;}
+    .tbtn,.rpill,.moneybtn,.picker,select,.seg,.pcat-tools{display:none !important;}
     *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
   }
 </style>
@@ -441,19 +450,19 @@
 
   <!-- COMPARE & ROUND -->
   <section class="panel" id="compare">
-    <div class="card no-print" id="card-cmp">
+    <div class="card printable" id="card-cmp">
       <h2 data-i="cmpT"></h2>
       <p class="lead" data-i="cmpL"></p>
       <div id="cmpBody" style="text-align:center"></div>
       <div style="text-align:center;margin-top:12px"><button class="tbtn" id="cmpNewBtn" onclick="cmpNew()"></button></div>
     </div>
-    <div class="card no-print" id="card-ord">
+    <div class="card printable" id="card-ord">
       <h2 data-i="ordT"></h2>
       <p class="lead" data-i="ordL"></p>
       <div id="ordBody" class="fred" style="text-align:center;font-size:32px;font-weight:600"></div>
       <div style="text-align:center;margin-top:12px"><button class="tbtn" id="ordNewBtn" onclick="ordNew()"></button></div>
     </div>
-    <div class="card no-print" id="card-rnd">
+    <div class="card printable" id="card-rnd">
       <h2 data-i="rndT"></h2>
       <p class="lead" data-i="rndL"></p>
       <div style="display:flex;gap:8px;justify-content:center;margin-bottom:8px" id="rndModeRow"></div>
@@ -466,7 +475,7 @@
 
   <!-- DIVISION & FACT FAMILIES -->
   <section class="panel" id="divide">
-    <div class="card no-print" id="card-share">
+    <div class="card printable" id="card-share">
       <h2 data-i="divT"></h2>
       <p class="lead" data-i="divL"></p>
       <div style="display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-bottom:12px">
@@ -476,7 +485,7 @@
       <div id="shareGrid" style="display:flex;justify-content:center;margin:8px 0"></div>
       <div id="shareEq" class="fred" style="text-align:center;font-size:26px;font-weight:600"></div>
     </div>
-    <div class="card no-print" id="card-fam">
+    <div class="card printable" id="card-fam">
       <h2 data-i="famT"></h2>
       <p class="lead" data-i="famL"></p>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:10px" id="famModeRow"></div>
@@ -502,7 +511,7 @@
       <p class="lead" data-i="gridL"></p>
       <div class="chartwrap"><div id="timesGrid" style="display:flex;justify-content:center"></div></div>
     </div>
-    <div class="card" id="card-array">
+    <div class="card printable" id="card-array">
       <h2 data-i="arrT"></h2>
       <p class="lead" data-i="arrL"></p>
       <div class="no-print" style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-bottom:14px">
@@ -512,7 +521,7 @@
       <div id="arrayGrid" style="display:flex;justify-content:center;margin:10px 0"></div>
       <div id="arrayEq" class="fred" style="text-align:center;font-size:22px;font-weight:600"></div>
     </div>
-    <div class="card no-print" id="card-build">
+    <div class="card printable" id="card-build">
       <h2 data-i="ddT"></h2>
       <p class="lead" data-i="ddL"></p>
       <div id="ddTarget" class="fred" style="text-align:center;font-size:22px;font-weight:600;margin-bottom:12px"></div>
@@ -544,14 +553,14 @@
       <p class="lead" data-i="fracWordsL"></p>
       <div class="vocab" id="fracVocab"></div>
     </div>
-    <div class="card no-print" id="card-equiv">
+    <div class="card printable" id="card-equiv">
       <h2 data-i="eqT"></h2>
       <p class="lead" data-i="eqL"></p>
       <div class="picker" id="eqPicker"></div>
       <div id="eqPies" style="margin:12px 0"></div>
       <div id="eqEq" class="fred" style="text-align:center;font-size:24px;font-weight:600;color:var(--frac)"></div>
     </div>
-    <div class="card no-print" id="card-cmpfrac">
+    <div class="card printable" id="card-cmpfrac">
       <h2 data-i="cfT"></h2>
       <p class="lead" data-i="cfL"></p>
       <div id="cfBody" style="text-align:center"></div>
@@ -594,12 +603,12 @@
 
   <!-- MONEY -->
   <section class="panel" id="money">
-    <div class="card no-print" id="card-moneyref">
+    <div class="card printable" id="card-moneyref">
       <h2 data-i="mRefT"></h2>
       <p class="lead" data-i="mRefL"></p>
       <div id="moneyRef" style="display:flex;gap:18px;flex-wrap:wrap;justify-content:center"></div>
     </div>
-    <div class="card no-print" id="card-mcount">
+    <div class="card printable" id="card-mcount">
       <h2 data-i="mCountT"></h2>
       <p class="lead" data-i="mCountL"></p>
       <div id="coinButtons" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:12px"></div>
@@ -607,7 +616,7 @@
       <div id="purseTotal" class="fred" style="text-align:center;font-size:26px;font-weight:600;margin-top:10px"></div>
       <div style="text-align:center;margin-top:8px"><button class="tbtn" id="purseClearBtn" onclick="moneyClear()"></button></div>
     </div>
-    <div class="card no-print" id="card-change">
+    <div class="card printable" id="card-change">
       <h2 data-i="mChgT"></h2>
       <p class="lead" data-i="mChgL"></p>
       <div id="chgBody" style="text-align:center"></div>
@@ -617,7 +626,7 @@
 
   <!-- TIME -->
   <section class="panel" id="time">
-    <div class="card no-print" id="card-readclock">
+    <div class="card printable" id="card-readclock">
       <h2 data-i="tReadT"></h2>
       <p class="lead" data-i="tReadL"></p>
       <div id="clockFace" style="text-align:center"></div>
@@ -631,7 +640,7 @@
         <button class="tbtn" onclick="clkStep(60)">+1 h</button>
       </div>
     </div>
-    <div class="card no-print" id="card-elapsed">
+    <div class="card printable" id="card-elapsed">
       <h2 data-i="tElapT"></h2>
       <p class="lead" data-i="tElapL"></p>
       <div id="elBody"></div>
@@ -641,12 +650,12 @@
 
   <!-- MEASURE -->
   <section class="panel" id="measure">
-    <div class="card no-print" id="card-units">
+    <div class="card printable" id="card-units">
       <h2 data-i="uT"></h2>
       <p class="lead" data-i="uL"></p>
       <div id="unitsBox" style="display:flex;gap:12px;flex-wrap:wrap"></div>
     </div>
-    <div class="card no-print" id="card-pa">
+    <div class="card printable" id="card-pa">
       <h2 data-i="paT"></h2>
       <p class="lead" data-i="paL"></p>
       <div style="display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-bottom:10px">
@@ -661,17 +670,17 @@
 
   <!-- GEOMETRY -->
   <section class="panel" id="geometry">
-    <div class="card no-print" id="card-shapes2d">
+    <div class="card printable" id="card-shapes2d">
       <h2 data-i="g2T"></h2>
       <p class="lead" data-i="g2L"></p>
       <div id="shapes2d" style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center"></div>
     </div>
-    <div class="card no-print" id="card-solids">
+    <div class="card printable" id="card-solids">
       <h2 data-i="g3T"></h2>
       <p class="lead" data-i="g3L"></p>
       <div id="solids3d" style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center"></div>
     </div>
-    <div class="card no-print" id="card-symmetry">
+    <div class="card printable" id="card-symmetry">
       <h2 data-i="gSymT"></h2>
       <p class="lead" data-i="gSymL"></p>
       <div id="symBox" style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center"></div>
@@ -680,12 +689,12 @@
 
   <!-- DATA -->
   <section class="panel" id="data">
-    <div class="card no-print" id="card-tallyref">
+    <div class="card printable" id="card-tallyref">
       <h2 data-i="dTalT"></h2>
       <p class="lead" data-i="dTalL"></p>
       <div id="tallyRef" style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center"></div>
     </div>
-    <div class="card no-print" id="card-ourchart">
+    <div class="card printable" id="card-ourchart">
       <h2 data-i="dT"></h2>
       <p class="lead" data-i="dL"></p>
       <div id="dataCtrl" style="display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin-bottom:6px"></div>
@@ -697,7 +706,7 @@
 
   <!-- PATTERNS -->
   <section class="panel" id="patterns">
-    <div class="card no-print" id="card-numpat">
+    <div class="card printable" id="card-numpat">
       <h2 data-i="pSeqT"></h2>
       <p class="lead" data-i="pSeqL"></p>
       <div id="patPills" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:12px"></div>
@@ -708,7 +717,7 @@
         <button class="tbtn" id="patNewBtn" onclick="patNew()"></button>
       </div>
     </div>
-    <div class="card no-print" id="card-reppat">
+    <div class="card printable" id="card-reppat">
       <h2 data-i="pRepT"></h2>
       <p class="lead" data-i="pRepL"></p>
       <div id="repSeq" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;align-items:center;margin:10px 0"></div>
@@ -717,7 +726,7 @@
         <button class="tbtn" id="repNewBtn" onclick="repNew()"></button>
       </div>
     </div>
-    <div class="card no-print" id="card-missing">
+    <div class="card printable" id="card-missing">
       <h2 data-i="pMissT"></h2>
       <p class="lead" data-i="pMissL"></p>
       <div id="mEq" style="text-align:center;font-family:'Fredoka';font-weight:600;font-size:32px;margin:8px 0"></div>
@@ -731,7 +740,7 @@
 
   <!-- BIG NUMBERS -->
   <section class="panel" id="bigops">
-    <div class="card no-print" id="card-bigmult">
+    <div class="card printable" id="card-bigmult">
       <h2 data-i="boMT"></h2>
       <p class="lead" data-i="boML"></p>
       <div style="display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-bottom:10px">
@@ -743,7 +752,7 @@
       <div id="bmArea" style="text-align:center;margin:10px 0"></div>
       <div id="bmSum" class="fred" style="text-align:center;font-size:22px;font-weight:600"></div>
     </div>
-    <div class="card no-print" id="card-bigadd">
+    <div class="card printable" id="card-bigadd">
       <h2 data-i="boAT"></h2>
       <p class="lead" data-i="boAL"></p>
       <div id="baBody" style="text-align:center"></div>
@@ -1001,6 +1010,9 @@ const STR={
   wsKeyT:{en:"Answer key",fr:"Corrigé"},
   wsPrint:{en:"🖨️ Print",fr:"🖨️ Imprimer"},
   wsBack:{en:"← Back",fr:"← Retour"},
+  spTitle:{en:"Try it yourself",fr:"Essaie par toi-même"},
+  spTag:{en:"Practice",fr:"Exercice"},
+  spLead:{en:"A fresh problem each time. Work it out, then reveal the answer when you're ready.",fr:"Un nouveau problème à chaque fois. Trouve la réponse, puis dévoile-la quand tu es prêt."},
   qProgress:{en:"Question",fr:"Question"},
   seeResults:{en:"See results ➜",fr:"Voir les résultats ➜"},
   doneT:{en:"Quiz finished! 🎯",fr:"Quiz terminé ! 🎯"},
@@ -1636,6 +1648,39 @@ function makeWorksheet(){
 }
 function printWorksheet(){window.print();}
 function closeWorksheet(){document.getElementById('worksheetCard').classList.add('hidden');document.getElementById('quizSetup').classList.remove('hidden');}
+
+/* ---- "Try it yourself" widgets — ONE per concept, stacked at the bottom
+   of each section. Each widget is locked to a single practice topic and
+   only ever makes that one kind of problem, with a reveal-answer button
+   (no score). Sections without a matching generator (Number Line,
+   Base-Ten Blocks) have none. */
+const SECPRAC={
+  chart:['pv','add','sub','roll'],compare:['compare','round'],
+  divide:['divide','factfam'],times:['times'],fractions:['frac','fraccmp','eqfrac'],
+  words:['words'],regroup:['carry','borrow'],money:['money','change'],
+  time:['clock','elapsed'],measure:['perim','area','unit'],geometry:['shapename','sides'],
+  data:['tally','readgraph'],patterns:['pattern','missing'],bigops:['bigmult','bigadd']
+};
+let spCur={};
+function spNew(topic){spCur[topic]=GEN[topic]();const a=document.getElementById('sp-a-'+topic);if(a)a.classList.add('hidden');spRender(topic);}
+function spShow(topic){const a=document.getElementById('sp-a-'+topic),q=spCur[topic];if(!a||!q)return;a.innerHTML=`<div class="sp-ans">${STR.wsAnswer[LANG]} : <b>${q.answer}</b></div>`+(q.explainHTML?`<div class="sp-exp">${q.explainHTML}</div>`:'');a.classList.remove('hidden');}
+function spRender(topic){const q=spCur[topic],qel=document.getElementById('sp-q-'+topic);if(!qel)return;if(!q){spNew(topic);return;}qel.innerHTML=(q.ask?`<div class="sp-ask">${q.ask}</div>`:'')+`<div class="sp-big">${q.bigHTML}</div>`;}
+function buildSectionPractice(){
+  const byId={};TOPICS.forEach(t=>byId[t.id]=t);
+  Object.keys(SECPRAC).forEach(sec=>{
+    const panel=document.getElementById(sec);if(!panel)return;
+    SECPRAC[sec].forEach(topic=>{
+      const t=byId[topic];if(!t)return;
+      let card=document.getElementById('sp-card-'+topic);
+      if(!card){card=document.createElement('div');card.className='card no-print sp-card';card.id='sp-card-'+topic;card.innerHTML=`<div class="sp-tag" id="sp-tag-${topic}"></div><h2 style="font-size:20px;margin-top:2px" id="sp-t-${topic}"></h2><div class="sp-box"><div class="sp-q" id="sp-q-${topic}"></div><div class="sp-a hidden" id="sp-a-${topic}"></div></div><div style="display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap"><button class="tbtn" id="sp-show-${topic}" onclick="spShow('${topic}')"></button><button class="tbtn" id="sp-new-${topic}" onclick="spNew('${topic}')"></button></div>`;panel.appendChild(card);}
+      document.getElementById('sp-tag-'+topic).textContent=STR.spTag[LANG];
+      document.getElementById('sp-t-'+topic).textContent=t.lab[LANG];
+      document.getElementById('sp-show-'+topic).textContent=STR.pReveal[LANG];
+      document.getElementById('sp-new-'+topic).textContent=STR.mNew[LANG];
+      spNew(topic);
+    });
+  });
+}
 function makeChoices(ans,extra=[]){const set=new Set([ans,...extra.filter(x=>x>=0)]);let g=0;while(set.size<4&&g<80){g++;const r=rand(4);let c;if(r===0)c=ans+pick([1,-1,10,-10,100]);else if(r===1)c=ans+pick([2,-2,20,-20]);else if(r===2)c=Math.max(0,ans+pick([3,-3,9,11]));else c=ans+pick([100,-100,1]);if(c>=0&&c!==ans)set.add(c);}return shuffle([...set].slice(0,4));}
 /* GEN: one question generator per practice topic. Each returns
    {ask, bigHTML, answer, choices, explainHTML}. IMPORTANT: always add new
@@ -1726,7 +1771,7 @@ function applyLang(){
   document.getElementById('againBtn').textContent=STR.again[LANG];
   document.getElementById('changeBtn').textContent=STR.change[LANG];
   document.getElementById('quitBtn').textContent=STR.change[LANG];
-  buildHome();buildMenu();buildChart();buildAddGrid();buildNumbers();buildNumLine();buildCompare();buildDivide();buildTimes();buildArrayViewer();buildDD();buildFractions();buildFractionsExtra();buildWords();buildRegroup();buildMoney();buildTime();buildMeasure();buildGeometry();buildData();buildPatterns();buildBigOps();setPracticeMode(practiceMode);updateScore();
+  buildHome();buildMenu();buildChart();buildAddGrid();buildNumbers();buildNumLine();buildCompare();buildDivide();buildTimes();buildArrayViewer();buildDD();buildFractions();buildFractionsExtra();buildWords();buildRegroup();buildMoney();buildTime();buildMeasure();buildGeometry();buildData();buildPatterns();buildBigOps();buildSectionPractice();setPracticeMode(practiceMode);updateScore();
   addPrintControls();updateSelBtn();
 }
 function toggleLang(){LANG=LANG==='fr'?'en':'fr';applyLang();}
